@@ -13,6 +13,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        satoshi: ["Satoshi", "-apple-system", "Roboto", "Helvetica", "sans-serif"],
+        manrope: ["Manrope", "-apple-system", "Roboto", "Helvetica", "sans-serif"],
+        "general-sans": ["General Sans", "-apple-system", "Roboto", "Helvetica", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -56,6 +61,14 @@ export default {
           "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
+        },
+        planlift: {
+          yellow: "#FFC800",
+          cream: "#FFFDF7",
+          dark: "#1F2937",
+          gray: "#5A5A59",
+          red: "#D03F37",
+          "gray-border": "rgba(0, 0, 0, 0.10)",
         },
       },
       borderRadius: {
