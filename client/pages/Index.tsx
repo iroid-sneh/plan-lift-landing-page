@@ -1,18 +1,86 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import FaqSection from "./faqSection";
 
 export default function Index() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [openItems, setOpenItems] = useState<number[]>([0, 3]); // For FAQ section
 
   const toggleFaq = (index: number) => {
-    setOpenFaqIndex(openFaqIndex === index ? null : index);
+    setOpenItems((prev) =>
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
   };
 
+  // FAQ data
+  const faqData = [
+    {
+      question: "What Is Planlift?",
+      answer: "PlanLift is an app that helps you make clear and decisive plans with friends. Instead of long back and forth conversations, you can create a plan, share it, and get a clear response within a set timeframe."
+    },
+    {
+      question: "How does it work?",
+      answer: "Simply create a plan, add details like time and location, and share the link with your friends. They can vote or confirm instantly."
+    },
+    {
+      question: "What happens after I make a plan?",
+      answer: "Once a plan is created, participants receive notifications. You can track responses in real-time and finalize the tour details."
+    },
+    {
+      question: "What can I use PlanLift for?",
+      answer: "You can use it for group tours, weekend trips, dinner plans, or any social gathering that requires coordination."
+    },
+    {
+      question: "Do my friends need PlanLift?",
+      answer: "Yes. When you send a plan, your friends will be prompted to download PlanLift so they can respond. We recommend encouraging them to download the app so you can continue making plans with each other more easily."
+    },
+    {
+      question: "Is it free?",
+      answer: "Yes, PlanLift offers a free tier that covers all the essential features for planning trips with your friends."
+    }
+  ];
+
+  function FaqItem({ item, isOpen, onToggle }: { item: { question: string; answer: string }; isOpen: boolean; onToggle: () => void }) {
+    return (
+      <div className={`bg-white border border-[#F2F4F7] rounded-[32px] overflow-hidden transition-all duration-300 h-fit ${isOpen ? 'shadow-sm' : ''}`}>
+        <button
+          onClick={onToggle}
+          className="w-full px-8 py-8 text-left flex items-start justify-between gap-4"
+        >
+          <div className="flex items-center gap-4 relative">
+            {/* Yellow Indicator Bar */}
+            <div className={`absolute -left-8 w-1.5 h-6 rounded-r-full transition-colors ${isOpen ? 'bg-[#FFC700]' : 'bg-transparent'}`} />
+            <h3 className="text-xl md:text-[22px] font-bold text-[#1D2939]">
+              {item.question}
+            </h3>
+          </div>
+
+          <div className="mt-1 flex-shrink-0">
+            {isOpen ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D2939" strokeWidth="2.5">
+                <path d="M5 12h14" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D2939" strokeWidth="2.5">
+                <path d="M12 5v14M5 12h14" strokeLinecap="round" />
+              </svg>
+            )}
+          </div>
+        </button>
+
+        <div className={`px-8 overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[500px] pb-8' : 'max-h-0'}`}>
+          <p className="text-[#667085] text-lg leading-relaxed">
+            {item.answer}
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-planlift-cream">
       {/* 1. NAVBAR */}
       <header className="bg-[#FDFCF6]">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px] py-6">
+        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px] py-6">
           <div className="flex items-center justify-between">
             {/* Logo - Fixed Path */}
             <Link to="/" className="flex items-center gap-2">
@@ -72,7 +140,7 @@ export default function Index() {
 
       {/* 2. EMAIL / NEWSLETTER ROW */}
       <div className="bg-[#1D2939] py-5">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
+        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <p className="text-white text-[20px] font-normal font-satoshi">
               We Would Love To Hear From You.
@@ -112,42 +180,42 @@ export default function Index() {
       {/* 3. HERO SECTION */}
       <section id="home" className="relative overflow-hidden pt-20 pb-0">
         {/* Background Dashed Circles - Centered behind text */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full flex justify-center pointer-events-none">
-          <div className="relative w-[1100px] h-[1100px]">
+        <div className="absolute -top-[500px] left-1/2 -translate-x-1/2 w-full flex justify-center pointer-events-none">
+          <div className="relative w-[1400px] h-[1400px]">
             {/* Outer Circle */}
-            <div className="absolute inset-0 rounded-full border border-dashed border-gray-300 opacity-60" />
+            <div className="absolute inset-0 rounded-full border border-dashed border-[#3B82F6] opacity-40" />
             {/* Inner Circle */}
-            <div className="absolute inset-[140px] rounded-full border border-dashed border-gray-300 opacity-60" />
+            <div className="absolute inset-[140px] rounded-full border border-dashed border-[#3B82F6] opacity-40" />
 
             {/* Floating Icons - Fixed Paths and precise positioning */}
             {/* Globe - Outer Top Left */}
             <img
               src="/1stillustration.png"
-              className="absolute top-[32%] left-[4%] w-16 h-16 object-contain"
+              className="absolute top-[2%] left-[-1%] w-24 h-24 object-contain"
               alt=""
             />
             {/* Route - Inner Middle Left */}
             <img
               src="/2ndillustration.png"
-              className="absolute top-[52%] left-[16%] w-16 h-16 object-contain"
+              className="absolute top-[32%] left-[16%] w-24 h-24 object-contain"
               alt=""
             />
             {/* Sun/Wind - Outer Top Right */}
             <img
               src="/3rdillustration.png"
-              className="absolute top-[38%] right-[4%] w-16 h-16 object-contain"
+              className="absolute top-[8%] right-[4%] w-24 h-24 object-contain"
               alt=""
             />
             {/* People Net - Inner Bottom Right */}
             <img
               src="/4thillustration.png"
-              className="absolute top-[58%] right-[16%] w-16 h-16 object-contain"
+              className="absolute top-[18%] right-[16%] w-24 h-24 object-contain"
               alt=""
             />
           </div>
         </div>
 
-        <div className="relative z-10 max-w-[1440px] mx-auto px-6 text-center">
+        <div className="relative z-10 max-w-[1800px] mx-auto px-6 text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-gray-200 bg-white/80 backdrop-blur-sm mb-8">
             <div className="flex items-center -space-x-2">
@@ -186,9 +254,9 @@ export default function Index() {
           {/* Hero Main Image (Phone + Avatars) - Fixed Path */}
           <div className="mt-20">
             <img
-              src="/herolmage.png"
+              src="/heroImage.png"
               alt="App interface"
-              className="w-full max-w-[1050px] mx-auto h-auto object-contain"
+              className="w-full max-w-[1250px] mx-auto h-auto object-contain"
             />
           </div>
         </div>
@@ -197,35 +265,69 @@ export default function Index() {
       {/* About Section - Your Smarter Way To Plan Together */}
       <section
         id="about"
-        className="border-t border-planlift-gray-border bg-planlift-cream py-16 lg:py-20"
+        className="bg-[#FDFCF6] py-16 lg:py-24"
       >
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[163px]">
-          <div className="flex flex-col items-center gap-10">
-            {/* Section Header */}
-            <div className="text-center max-w-[560px]">
-              <div className="inline-flex px-4 py-2 rounded-full border border-planlift-gray-border mb-4">
-                <span className="text-black/60 text-sm font-medium">
+        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+          <div className="flex flex-col items-center">
+
+            {/* 1. Section Header (Centered) */}
+            <div className="text-center mb-16">
+              <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
+                <span className="text-[#1D2939] text-sm font-medium">
                   About Us
                 </span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-bold text-planlift-dark leading-tight">
-                Your Smarter Way to Plan Together
+              <h2 className="text-[36px] md:text-[56px] font-bold text-[#1D2939] leading-tight">
+                Your Smarter Way To <br className="hidden md:block" /> Plan Together
               </h2>
             </div>
 
-            {/* Image */}
-            <div className="w-full max-w-[1115px]">
-              <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F712777f382274689b287e591644a3bb1%2F35d8e1cb887e432d9d85d751d05b45ba?format=webp&width=1200"
-                alt="Friends planning together"
-                className="w-full h-auto rounded-2xl"
-              />
+            {/* 2. Content Row (Two Columns) */}
+            <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 w-full mb-16">
+
+              {/* Left Column: Illustration */}
+              <div className="w-full lg:w-1/2">
+                <img
+                  src="/Sec2Img.png"
+                  alt="Friends planning together"
+                  className="w-full h-auto object-contain"
+                />
+              </div>
+
+              {/* Right Column: Text with Dividers */}
+              <div className="w-full lg:w-1/2 flex flex-col gap-8">
+                <div className="space-y-6">
+                  <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
+                    PlanLift was created to make making plans with friends feel easier and less stressful.
+                  </p>
+                  <div className="border-t border-gray-200" />
+
+                  <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
+                    We started PlanLift after noticing how often plans fall apart. Many plans are not clear or decisive.
+                    Some people hesitate to initiate plans. Others worry about rejection. And sometimes conversations
+                    go back and forth without ever reaching a decision.
+                  </p>
+                  <div className="border-t border-gray-200" />
+
+                  <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
+                    PlanLift is designed to remove that friction. It helps make plans simple, clear, and decisive
+                    so everyone knows what is happening and by when.
+                  </p>
+                  <div className="border-t border-gray-200" />
+
+                  <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
+                    Our vision is simple. When making plans is easier, people make more of them. That means getting
+                    out of the house, spending quality time together, and building stronger real world connections.
+                  </p>
+                </div>
+              </div>
             </div>
 
-            {/* CTA Button */}
-            <button className="px-8 py-4 bg-planlift-yellow rounded-full text-black text-base font-medium hover:bg-yellow-500 transition-colors">
+            {/* 3. CTA Button (Centered at bottom) */}
+            <button className="px-10 py-4 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-md">
               Learn More
             </button>
+
           </div>
         </div>
       </section>
@@ -233,92 +335,78 @@ export default function Index() {
       {/* How It Works - 3 Easy Steps */}
       <section
         id="how-it-work"
-        className="border-t border-planlift-gray-border bg-planlift-cream py-16 lg:py-20"
+        className="bg-[#FDFCF6] py-20 lg:py-28"
       >
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-24">
-          <div className="flex flex-col items-center gap-12">
-            {/* Section Header */}
-            <div className="text-center max-w-[700px]">
-              <div className="inline-flex px-4 py-2 rounded-full border border-planlift-gray-border mb-4">
-                <span className="text-planlift-gray text-sm">How It Work</span>
+        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+          <div className="flex flex-col items-center">
+
+            {/* 1. Section Header */}
+            <div className="text-center max-w-[800px] mb-16">
+              <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
+                <span className="text-[#667085] text-sm font-medium">How It Work</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-bold text-planlift-dark leading-tight mb-4">
-                Plan Your Perfect Trip in Just 3 Easy Steps.
+              <h2 className="text-[36px] md:text-[56px] font-bold text-[#1D2939] leading-tight mb-6">
+                Plan Your Perfect Trip In Just <br className="hidden md:block" /> 3 Easy Steps.
               </h2>
-              <p className="text-planlift-gray text-lg sm:text-xl">
-                A Simple Workflow To Create, Manage, And Share Your Travel
-                Plans.
+              <p className="text-[#667085] text-lg md:text-xl font-normal">
+                A Simple Workflow To Create, Manage, And Share Your Travel Plans.
               </p>
             </div>
 
-            {/* Steps Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 w-full max-w-[1154px]">
-              {/* Step 1 */}
-              <div className="flex flex-col items-center text-center gap-6">
-                <div className="w-full aspect-square max-w-[280px] flex items-center justify-center">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F712777f382274689b287e591644a3bb1%2F2f69b445efde498e9564d2cf2557c10a?format=webp&width=600"
-                    alt="Create a clear plan"
-                    className="w-full h-auto"
-                  />
+            {/* 2. Steps Flow Container */}
+            <div className="w-full max-w-[1200px]">
+
+              {/* Step Numbers with Dashed Line */}
+              <div className="relative flex justify-between items-center max-w-[900px] mx-auto mb-10">
+                {/* Dashed Connecting Line */}
+                <div className="absolute top-1/2 left-0 w-full h-[1px] border-t border-dashed border-[#D0D5DD] -z-0"></div>
+
+                {/* Number 1 (Active) */}
+                <div className="relative z-10 w-14 h-14 rounded-full bg-[#FFC700] flex items-center justify-center text-black text-xl font-bold border-4 border-[#FDFCF6]">
+                  1
                 </div>
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-full bg-planlift-yellow flex items-center justify-center text-black text-xl font-bold mb-3 mx-auto">
-                    1
-                  </div>
-                  <h3 className="text-xl lg:text-2xl font-medium text-black mb-3">
-                    Creating a Clear Plan
-                  </h3>
-                  <p className="text-black/60 text-base lg:text-xl">
-                    Turn your travel ideas into a real plan, instantly.
-                  </p>
+                {/* Number 2 */}
+                <div className="relative z-10 w-14 h-14 rounded-full bg-[#F2F4F7] flex items-center justify-center text-[#667085] text-xl font-bold border-4 border-[#FDFCF6]">
+                  2
+                </div>
+                {/* Number 3 */}
+                <div className="relative z-10 w-14 h-14 rounded-full bg-[#F2F4F7] flex items-center justify-center text-[#667085] text-xl font-bold border-4 border-[#FDFCF6]">
+                  3
                 </div>
               </div>
 
-              {/* Step 2 */}
-              <div className="flex flex-col items-center text-center gap-6">
-                <div className="w-full aspect-square max-w-[280px] flex items-center justify-center">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F712777f382274689b287e591644a3bb1%2Ff3396bb161b8477694f4e1b3c9569a6c?format=webp&width=600"
-                    alt="Share with friends"
-                    className="w-full h-auto"
-                  />
+              {/* Steps Grid (Titles & Descriptions) */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-12">
+                <div>
+                  <h3 className="text-[22px] md:text-[24px] font-bold text-[#1D2939] mb-3">Creating A Clear Plan</h3>
+                  <p className="text-[#667085] text-lg">Turn Your Travel Ideas Into A Real Plan, Instantly.</p>
                 </div>
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-full bg-planlift-yellow flex items-center justify-center text-black text-xl font-bold mb-3 mx-auto">
-                    2
-                  </div>
-                  <h3 className="text-xl lg:text-2xl font-medium text-black mb-3">
-                    Sharing it With Friends
-                  </h3>
-                  <p className="text-black/60 text-base lg:text-xl">
-                    Send your plan to friends instantly and collaborate in real
-                    time.
-                  </p>
+                <div>
+                  <h3 className="text-[22px] md:text-[24px] font-bold text-[#1D2939] mb-3">Sharing It With Friends</h3>
+                  <p className="text-[#667085] text-lg">Send Your Plan To Friends Instantly And Collaborate In Real Time.</p>
+                </div>
+                <div>
+                  <h3 className="text-[22px] md:text-[24px] font-bold text-[#1D2939] mb-3">Get Responses</h3>
+                  <p className="text-[#667085] text-lg">Connect, Collaborate, And Create Unforgettable Journeys.</p>
                 </div>
               </div>
 
-              {/* Step 3 */}
-              <div className="flex flex-col items-center text-center gap-6">
-                <div className="w-full aspect-square max-w-[280px] flex items-center justify-center">
-                  <img
-                    src="https://cdn.builder.io/api/v1/image/assets%2F712777f382274689b287e591644a3bb1%2F7b82d601f4b542aa8b8283a90b4c2b6a?format=webp&width=600"
-                    alt="Get responses"
-                    className="w-full h-auto"
-                  />
+              {/* Step Image Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* Card 1 */}
+                <div className="bg-[#FCFCFD] border border-[#F2F4F7] rounded-[32px] p-8 flex items-center justify-center min-h-[350px]">
+                  <img src="/step1Img.png" alt="Step 1" className="max-w-full h-auto object-contain" />
                 </div>
-                <div className="relative">
-                  <div className="w-12 h-12 rounded-full bg-planlift-yellow flex items-center justify-center text-black text-xl font-bold mb-3 mx-auto">
-                    3
-                  </div>
-                  <h3 className="text-xl lg:text-2xl font-medium text-black mb-3">
-                    Get Responses
-                  </h3>
-                  <p className="text-black/60 text-base lg:text-xl">
-                    Connect, collaborate, and create unforgettable journeys.
-                  </p>
+                {/* Card 2 */}
+                <div className="bg-[#FCFCFD] border border-[#F2F4F7] rounded-[32px] p-8 flex items-center justify-center min-h-[350px]">
+                  <img src="/Step2Img.png" alt="Step 2" className="max-w-full h-auto object-contain" />
+                </div>
+                {/* Card 3 */}
+                <div className="bg-[#FCFCFD] border border-[#F2F4F7] rounded-[32px] p-8 flex items-center justify-center min-h-[350px]">
+                  <img src="/Step3Img.png" alt="Step 3" className="max-w-full h-auto object-contain" />
                 </div>
               </div>
+
             </div>
           </div>
         </div>
@@ -327,579 +415,189 @@ export default function Index() {
       {/* Pricing Section */}
       <section
         id="pricing"
-        className="border-t border-planlift-gray-border bg-planlift-cream py-16 lg:py-20"
+        className="bg-[#FDFCF6] py-20 lg:py-28"
       >
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-24">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
-            {/* Left Content */}
-            <div className="flex-1 max-w-[483px]">
-              <div className="inline-flex px-4 py-2 rounded-full border border-planlift-gray-border mb-4">
-                <span className="text-planlift-gray text-sm">Pricing</span>
+        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+
+          {/* Top Content: Header & Rocket */}
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-12 mb-16">
+            <div className="max-w-[600px]">
+              <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
+                <span className="text-[#667085] text-sm font-medium">Pricing</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-bold text-planlift-dark leading-tight mb-4">
-                Flexible Pricing for Every Need
+              <h2 className="text-[40px] md:text-[64px] font-bold text-[#1D2939] leading-[1.1] mb-6 font-satoshi">
+                Flexible Pricing for <br /> Every Need
               </h2>
-              <p className="text-planlift-gray text-lg sm:text-xl mb-8">
-                Planlift makes trip planning easy, fast, and enjoyable for
-                everyone.
+              <p className="text-[#667085] text-lg md:text-xl max-w-[450px]">
+                Planlift Makes Trip Planning Easy, Fast, And Enjoyable For Everyone.
               </p>
             </div>
 
-            {/* Right Image */}
-            <div className="flex-shrink-0">
+            <div className="hidden lg:block">
               <img
-                src="https://cdn.builder.io/api/v1/image/assets%2F712777f382274689b287e591644a3bb1%2F20a4cddb8b3a4bad996976fd6ae547da?format=webp&width=600"
+                src="/pricingRocketImg.png"
                 alt="Rocket illustration"
-                className="w-[313px] h-auto"
+                className="w-[350px] h-auto object-contain"
               />
             </div>
           </div>
 
-          {/* Pricing Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mt-12 max-w-[1114px]">
-            {/* Free Plan */}
-            <div className="bg-white rounded-3xl border border-gray-200 p-6">
-              <div className="inline-flex px-4 py-2 rounded-full border border-planlift-gray-border mb-6">
-                <span className="text-sm font-medium">Free</span>
-              </div>
+          {/* Pricing Cards Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1240px]">
 
-              <div className="mb-6">
-                <div className="text-5xl lg:text-[64px] font-medium text-black mb-1">
-                  $00
+            {/* 1. Free Plan Card */}
+            <div className="bg-white rounded-[32px] border border-gray-100 p-8 flex flex-col justify-between shadow-sm">
+              <div className="flex items-start">
+                {/* Price Column */}
+                <div className="flex-1 pr-8">
+                  <div className="inline-flex px-4 py-1.5 rounded-full border border-gray-100 mb-8">
+                    <span className="text-sm font-medium text-[#1D2939]">Free</span>
+                  </div>
+                  <div className="text-[64px] font-bold text-[#1D2939] leading-none mb-2">$00</div>
+                  <p className="text-[#667085] text-base">Per Brand, Per Month</p>
                 </div>
-                <div className="text-black/60 text-lg font-general-sans">
-                  Per Brand, Per Month
+
+                {/* Vertical Divider */}
+                <div className="w-[1px] h-32 border-l border-dashed border-gray-300 mx-2 mt-12" />
+
+                {/* Benefits Column */}
+                <div className="flex-1 pl-8 pt-4">
+                  <p className="text-[#1D2939] font-bold text-lg mb-4">Benefits:</p>
+                  <ul className="space-y-4">
+                    {['Create up to 5 plans', 'Group tour planning', 'Share with friends', 'Cancel anytime'].map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-[#667085]">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                          <circle cx="10" cy="10" r="10" fill="#F2F4F7" />
+                          <path d="M14 7L8.5 12.5L6 10" stroke="#1D2939" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        <span className="text-sm md:text-base">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
 
-              <div className="border-t border-planlift-gray-border my-6" />
-
-              <div className="mb-8">
-                <p className="text-black font-general-sans text-lg mb-4">
-                  Benefits:
-                </p>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M6 7.17243L8.0202 9.33341L12.6667 4.66675"
-                        stroke="#131313"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C8.65479 2 9.28509 2.10489 9.875 2.29878"
-                        stroke="#131313"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="text-sm text-black/60">
-                      Create up to 5 plans
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M6 7.17243L8.0202 9.33341L12.6667 4.66675"
-                        stroke="#131313"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C8.65479 2 9.28509 2.10489 9.875 2.29878"
-                        stroke="#131313"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="text-sm text-black/60">
-                      Group tour planning
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M6 7.17243L8.0202 9.33341L12.6667 4.66675"
-                        stroke="#131313"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C8.65479 2 9.28509 2.10489 9.875 2.29878"
-                        stroke="#131313"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="text-sm text-black/60">
-                      Share with friends
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M6 7.17243L8.0202 9.33341L12.6667 4.66675"
-                        stroke="#131313"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C8.65479 2 9.28509 2.10489 9.875 2.29878"
-                        stroke="#131313"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="text-sm text-black/60">
-                      Cancel anytime
-                    </span>
-                  </li>
-                </ul>
-              </div>
-
-              <button className="w-full px-8 py-4 bg-gray-100 rounded-full text-black text-base font-medium hover:bg-gray-200 transition-colors">
+              <button className="w-full mt-10 py-4 bg-[#F2F4F7] rounded-full text-[#1D2939] text-lg font-bold hover:bg-gray-200 transition-colors">
                 Select Plan
               </button>
             </div>
 
-            {/* Premium Plan */}
-            <div className="bg-white rounded-3xl border-2 border-planlift-yellow shadow-[0_1px_14.1px_0_#B38C00] p-6">
-              <div className="inline-flex px-4 py-2 rounded-full border border-planlift-gray-border mb-6 gap-2">
-                <span className="text-sm font-medium font-general-sans">
-                  Premium
-                </span>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M11.1335 12.6532H4.8668C4.5868 12.6532 4.27347 12.4332 4.18013 12.1666L1.42013 4.44658C1.0268 3.33991 1.4868 2.99991 2.43347 3.67991L5.03347 5.53991C5.4668 5.83991 5.96013 5.68658 6.1468 5.19991L7.32013 2.07324C7.69347 1.07324 8.31347 1.07324 8.6868 2.07324L9.86013 5.19991C10.0468 5.68658 10.5401 5.83991 10.9668 5.53991L13.4068 3.79991C14.4468 3.05324 14.9468 3.43324 14.5201 4.63991L11.8268 12.1799C11.7268 12.4332 11.4135 12.6532 11.1335 12.6532Z"
-                    stroke="black"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M4.33398 14.6667H11.6673"
-                    stroke="black"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M6.33398 9.33325H9.66732"
-                    stroke="black"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-
-              <div className="mb-6">
-                <div className="text-5xl lg:text-[64px] font-medium text-black mb-1">
-                  $3.99
+            {/* 2. Premium Plan Card */}
+            <div className="bg-white rounded-[32px] border-2 border-[#FFC700] p-8 flex flex-col justify-between shadow-[0_20px_50px_-15px_rgba(255,199,0,0.3)] relative">
+              <div className="flex items-start">
+                {/* Price Column */}
+                <div className="flex-1 pr-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#FFC700] mb-8 bg-[#FFF9E5]">
+                    <span className="text-sm font-medium text-[#1D2939]">Premium</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M6 9l6 6 6-6" transform="rotate(-180 12 12)" />
+                    </svg>
+                  </div>
+                  <div className="text-[64px] font-bold text-[#1D2939] leading-none mb-2">$3.99</div>
+                  <p className="text-[#667085] text-base">Per Brand, Per Year</p>
                 </div>
-                <div className="text-black/60 text-lg font-general-sans">
-                  Per Brand, Per Year
+
+                {/* Vertical Divider */}
+                <div className="w-[1px] h-32 border-l border-dashed border-gray-300 mx-2 mt-12" />
+
+                {/* Benefits Column */}
+                <div className="flex-1 pl-8 pt-4">
+                  <p className="text-[#1D2939] font-bold text-lg mb-4">Benefits:</p>
+                  <ul className="space-y-4">
+                    {['Unlimited plans', 'All Pro features', 'Best value yearly plan', 'Cancel anytime'].map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-[#667085]">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                          <circle cx="10" cy="10" r="10" fill="#FFF9E5" />
+                          <path d="M14 7L8.5 12.5L6 10" stroke="#FFC700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                        <span className="text-sm md:text-base">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
 
-              <div className="border-t border-black/10 my-6" />
-
-              <div className="mb-8">
-                <p className="text-black font-general-sans text-lg mb-4">
-                  Benefits:
-                </p>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M6 7.17243L8.0202 9.33341L12.6667 4.66675"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C8.65479 2 9.28509 2.10489 9.875 2.29878"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="text-sm text-black/60">
-                      Unlimited plans
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M6 7.17243L8.0202 9.33341L12.6667 4.66675"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C8.65479 2 9.28509 2.10489 9.875 2.29878"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="text-sm text-black/60">
-                      All Pro features
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M6 7.17243L8.0202 9.33341L12.6667 4.66675"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C8.65479 2 9.28509 2.10489 9.875 2.29878"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="text-sm text-black/60">
-                      Best value yearly plan
-                    </span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M6 7.17243L8.0202 9.33341L12.6667 4.66675"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <path
-                        d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C8.65479 2 9.28509 2.10489 9.875 2.29878"
-                        stroke="black"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <span className="text-sm text-black/60">
-                      Cancel anytime
-                    </span>
-                  </li>
-                </ul>
-              </div>
-
-              <button className="w-full px-8 py-4 bg-planlift-yellow rounded-full text-black text-base font-normal hover:bg-yellow-500 transition-colors flex items-center justify-center gap-2">
+              <button className="w-full mt-10 py-4 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-colors flex items-center justify-center gap-2">
                 Select Plan
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path
-                    d="M6 12L10 8L6 4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
               </button>
             </div>
+
           </div>
         </div>
       </section>
 
       {/* FAQ Section */}
-      <section
-        id="faq"
-        className="border-t border-planlift-gray-border bg-planlift-cream py-16 lg:py-20"
-      >
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[167px]">
-          <div className="flex flex-col lg:flex-row items-start gap-12">
-            {/* Left Side */}
-            <div className="flex-1 max-w-[644px]">
-              <div className="inline-flex px-4 py-2 rounded-full border border-planlift-gray-border mb-4">
-                <span className="text-planlift-gray text-sm">FAQ</span>
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 lg:py-28 bg-[#FDFCF6]">
+        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+
+          {/* Header Row: Title + Illustration */}
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-10 mb-16">
+            <div className="max-w-[700px]">
+              <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
+                <span className="text-[#667085] text-sm font-medium">FAQ</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl lg:text-[48px] font-bold text-planlift-dark font-manrope leading-tight mb-4">
+              <h2 className="text-[40px] md:text-[64px] font-bold text-[#1D2939] leading-[1.1] mb-6 font-satoshi">
                 Frequently asked questions
               </h2>
-              <p className="text-planlift-gray text-lg sm:text-xl mb-12">
-                Clear answers to help you use Planlift with confidence and enjoy
-                smooth, stress-free tour planning with your friends.
+              <p className="text-[#667085] text-lg md:text-xl max-w-[550px]">
+                Clear Answers To Help You Use Planlift With Confidence And Enjoy Smooth, Stress-Free Tour Planning With Your Friends.
               </p>
-
-              {/* FAQ Items - Left Column */}
-              <div className="space-y-6">
-                {/* FAQ 1 */}
-                <div className="rounded-3xl border border-gray-300 overflow-hidden">
-                  <button
-                    onClick={() => toggleFaq(0)}
-                    className="w-full px-5 py-10 text-left flex items-start justify-between gap-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex gap-5">
-                      <div
-                        className={`w-1 flex-shrink-0 ${openFaqIndex === 0 ? "bg-planlift-yellow" : "bg-transparent"}`}
-                      />
-                      <div className="flex-1">
-                        <h3 className="text-lg font-medium text-black mb-3">
-                          What is Planlift?
-                        </h3>
-                        {openFaqIndex === 0 && (
-                          <p className="text-base text-planlift-gray/60 pr-4">
-                            PlanLift is an app that helps you make clear and
-                            decisive plans with friends. Instead of long back
-                            and forth conversations, you can create a plan,
-                            share it, and get a clear response within a set
-                            timeframe.
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <svg
-                      className="flex-shrink-0 mt-1"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      {openFaqIndex === 0 ? (
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M4 12C4 11.4477 4.44772 11 5 11L19 11C19.5523 11 20 11.4477 20 12C20 12.5523 19.5523 13 19 13L5 13C4.44772 13 4 12.5523 4 12Z"
-                          fill="black"
-                        />
-                      ) : (
-                        <path
-                          d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5V10.9999L5 10.9999C4.44772 10.9999 4 11.4476 4 11.9999C4 12.5522 4.44771 12.9999 5 12.9999L11 12.9999V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V12.9999L19 12.9999C19.5523 12.9999 20 12.5522 20 11.9999C20 11.4476 19.5523 10.9999 19 10.9999L13 10.9999V5Z"
-                          fill="black"
-                        />
-                      )}
-                    </svg>
-                  </button>
-                </div>
-
-                {/* FAQ 2 */}
-                <div className="rounded-3xl border border-gray-300 overflow-hidden">
-                  <button
-                    onClick={() => toggleFaq(1)}
-                    className="w-full px-5 py-10 text-left flex items-start justify-between gap-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex gap-5">
-                      <div
-                        className={`w-1 flex-shrink-0 ${openFaqIndex === 1 ? "bg-planlift-yellow" : "bg-transparent"}`}
-                      />
-                      <div className="flex-1">
-                        <h3 className="text-lg font-medium text-black">
-                          How does it work?
-                        </h3>
-                      </div>
-                    </div>
-                    <svg
-                      className="flex-shrink-0 mt-1"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5V10.9999L5 10.9999C4.44772 10.9999 4 11.4476 4 11.9999C4 12.5522 4.44771 12.9999 5 12.9999L11 12.9999V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V12.9999L19 12.9999C19.5523 12.9999 20 12.5522 20 11.9999C20 11.4476 19.5523 10.9999 19 10.9999L13 10.9999V5Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                {/* FAQ 3 */}
-                <div className="rounded-3xl border border-gray-300 overflow-hidden">
-                  <button
-                    onClick={() => toggleFaq(2)}
-                    className="w-full px-5 py-10 text-left flex items-start justify-between gap-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex gap-5">
-                      <div
-                        className={`w-1 flex-shrink-0 ${openFaqIndex === 2 ? "bg-planlift-yellow" : "bg-transparent"}`}
-                      />
-                      <div className="flex-1">
-                        <h3 className="text-lg font-medium text-black">
-                          What happens after I make a plan?
-                        </h3>
-                      </div>
-                    </div>
-                    <svg
-                      className="flex-shrink-0 mt-1"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5V10.9999L5 10.9999C4.44772 10.9999 4 11.4476 4 11.9999C4 12.5522 4.44771 12.9999 5 12.9999L11 12.9999V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V12.9999L19 12.9999C19.5523 12.9999 20 12.5522 20 11.9999C20 11.4476 19.5523 10.9999 19 10.9999L13 10.9999V5Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
             </div>
 
-            {/* Right Side */}
-            <div className="flex-1 max-w-[513px]">
-              <div className="mb-12 lg:mt-[171px]">
-                <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2F712777f382274689b287e591644a3bb1%2Fa2b01c603a1e40468d0227ef83c41a6b?format=webp&width=600"
-                  alt="FAQ illustration"
-                  className="w-[283px] h-auto mx-auto lg:mx-0"
-                />
-              </div>
-
-              {/* FAQ Items - Right Column */}
-              <div className="space-y-6">
-                {/* FAQ 4 */}
-                <div className="rounded-3xl border border-gray-300 overflow-hidden">
-                  <button
-                    onClick={() => toggleFaq(3)}
-                    className="w-full px-5 py-10 text-left flex items-start justify-between gap-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex gap-5">
-                      <div
-                        className={`w-1 flex-shrink-0 ${openFaqIndex === 3 ? "bg-planlift-yellow" : "bg-transparent"}`}
-                      />
-                      <div className="flex-1">
-                        <h3 className="text-lg font-medium text-black mb-3">
-                          What can I use PlanLift for?
-                        </h3>
-                      </div>
-                    </div>
-                    <svg
-                      className="flex-shrink-0 mt-1"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5V10.9999L5 10.9999C4.44772 10.9999 4 11.4476 4 11.9999C4 12.5522 4.44771 12.9999 5 12.9999L11 12.9999V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V12.9999L19 12.9999C19.5523 12.9999 20 12.5522 20 11.9999C20 11.4476 19.5523 10.9999 19 10.9999L13 10.9999V5Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </button>
-                </div>
-
-                {/* FAQ 5 */}
-                <div className="rounded-3xl border border-gray-300 overflow-hidden">
-                  <button
-                    onClick={() => toggleFaq(4)}
-                    className="w-full px-5 py-10 text-left flex items-start justify-between gap-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex gap-5">
-                      <div
-                        className={`w-1 flex-shrink-0 ${openFaqIndex === 4 ? "bg-planlift-yellow" : "bg-transparent"}`}
-                      />
-                      <div className="flex-1">
-                        <h3 className="text-lg font-medium text-black mb-3">
-                          Do my friends need PlanLift?
-                        </h3>
-                        {openFaqIndex === 4 && (
-                          <p className="text-base text-planlift-gray/60 pr-4">
-                            Yes. When you send a plan, your friends will be
-                            prompted to download PlanLift so they can respond.
-                            We recommend encouraging them to download the app so
-                            you can continue making plans with each other more
-                            easily.
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <svg
-                      className="flex-shrink-0 mt-1"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      {openFaqIndex === 4 ? (
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M4 12C4 11.4477 4.44772 11 5 11L19 11C19.5523 11 20 11.4477 20 12C20 12.5523 19.5523 13 19 13L5 13C4.44772 13 4 12.5523 4 12Z"
-                          fill="black"
-                        />
-                      ) : (
-                        <path
-                          d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5V10.9999L5 10.9999C4.44772 10.9999 4 11.4476 4 11.9999C4 12.5522 4.44771 12.9999 5 12.9999L11 12.9999V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V12.9999L19 12.9999C19.5523 12.9999 20 12.5522 20 11.9999C20 11.4476 19.5523 10.9999 19 10.9999L13 10.9999V5Z"
-                          fill="black"
-                        />
-                      )}
-                    </svg>
-                  </button>
-                </div>
-
-                {/* FAQ 6 */}
-                <div className="rounded-3xl border border-gray-300 overflow-hidden">
-                  <button
-                    onClick={() => toggleFaq(5)}
-                    className="w-full px-5 py-10 text-left flex items-start justify-between gap-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex gap-5">
-                      <div
-                        className={`w-1 flex-shrink-0 ${openFaqIndex === 5 ? "bg-planlift-yellow" : "bg-transparent"}`}
-                      />
-                      <div className="flex-1">
-                        <h3 className="text-lg font-medium text-black">
-                          Is it free?
-                        </h3>
-                      </div>
-                    </div>
-                    <svg
-                      className="flex-shrink-0 mt-1"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                    >
-                      <path
-                        d="M13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5V10.9999L5 10.9999C4.44772 10.9999 4 11.4476 4 11.9999C4 12.5522 4.44771 12.9999 5 12.9999L11 12.9999V19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19V12.9999L19 12.9999C19.5523 12.9999 20 12.5522 20 11.9999C20 11.4476 19.5523 10.9999 19 10.9999L13 10.9999V5Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
+            <div className="hidden lg:block">
+              <img
+                src="/faqImg.png"
+                alt="FAQ illustration"
+                className="w-[380px] h-auto object-contain"
+              />
             </div>
           </div>
 
-          {/* CTA Button */}
-          <div className="text-center mt-12">
-            <button className="px-8 py-4 bg-planlift-yellow rounded-full text-planlift-dark text-lg font-bold hover:bg-yellow-500 transition-colors lowercase">
+          {/* FAQ Columns: Split into two independent flex containers */}
+          <div className="flex flex-col lg:flex-row items-start gap-6 mb-16">
+
+            {/* Left Column (Items 1, 2, 3) */}
+            <div className="flex-1 flex flex-col gap-6 w-full">
+              {faqData.slice(0, 3).map((item, index) => {
+                const actualIndex = index; // 0, 1, 2
+                const isOpen = openItems.includes(actualIndex);
+                return <FaqItem key={actualIndex} item={item} isOpen={isOpen} onToggle={() => toggleFaq(actualIndex)} />;
+              })}
+            </div>
+
+            {/* Right Column (Items 4, 5, 6) */}
+            <div className="flex-1 flex flex-col gap-6 w-full">
+              {faqData.slice(3, 6).map((item, index) => {
+                const actualIndex = index + 2; // 3, 4, 5
+                const isOpen = openItems.includes(actualIndex);
+                return <FaqItem key={actualIndex} item={item} isOpen={isOpen} onToggle={() => toggleFaq(actualIndex)} />;
+              })}
+            </div>
+          </div>
+
+          {/* Center CTA Button */}
+          <div className="flex justify-center">
+            <button className="px-12 py-5 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-md">
               Ask a Questions
             </button>
           </div>
         </div>
       </section>
 
+      {/* <FaqSection /> */}
+
       {/* Footer */}
       <footer className="bg-planlift-dark py-16 lg:py-[70px]">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[141px]">
+        <div className="max-w-[1800px] mx-auto px-4 sm:px-8 lg:px-[141px]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
             {/* Column 1 - Brand */}
             <div className="lg:col-span-1">
               <Link to="/" className="flex items-center gap-3 mb-6">
                 <img
-                  src="https://cdn.builder.io/api/v1/image/assets%2F712777f382274689b287e591644a3bb1%2F6a4de2054f21403ca4c69a8742227895?format=webp&width=100"
+                  src="/logo.png"
                   alt="Planlift Logo"
-                  className="h-10 w-10"
+                  className="h-10 w-10 object-contain"
                 />
                 <span className="text-2xl lg:text-[28px] font-bold text-white font-satoshi">
                   Planlift
