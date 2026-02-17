@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FaqSection from "./faqSection";
 
 export default function Index() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [openItems, setOpenItems] = useState<number[]>([0, 3]); // For FAQ section
-
+  const navigate = useNavigate();
   const toggleFaq = (index: number) => {
     setOpenItems((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
   };
 
@@ -16,40 +16,58 @@ export default function Index() {
   const faqData = [
     {
       question: "What Is Planlift?",
-      answer: "PlanLift is an app that helps you make clear and decisive plans with friends. Instead of long back and forth conversations, you can create a plan, share it, and get a clear response within a set timeframe."
+      answer:
+        "PlanLift is an app that helps you make clear and decisive plans with friends. Instead of long back and forth conversations, you can create a plan, share it, and get a clear response within a set timeframe.",
     },
     {
       question: "How does it work?",
-      answer: "Simply create a plan, add details like time and location, and share the link with your friends. They can vote or confirm instantly."
+      answer:
+        "Simply create a plan, add details like time and location, and share the link with your friends. They can vote or confirm instantly.",
     },
     {
       question: "What happens after I make a plan?",
-      answer: "Once a plan is created, participants receive notifications. You can track responses in real-time and finalize the tour details."
+      answer:
+        "Once a plan is created, participants receive notifications. You can track responses in real-time and finalize the tour details.",
     },
     {
       question: "What can I use PlanLift for?",
-      answer: "You can use it for group tours, weekend trips, dinner plans, or any social gathering that requires coordination."
+      answer:
+        "You can use it for group tours, weekend trips, dinner plans, or any social gathering that requires coordination.",
     },
     {
       question: "Do my friends need PlanLift?",
-      answer: "Yes. When you send a plan, your friends will be prompted to download PlanLift so they can respond. We recommend encouraging them to download the app so you can continue making plans with each other more easily."
+      answer:
+        "Yes. When you send a plan, your friends will be prompted to download PlanLift so they can respond. We recommend encouraging them to download the app so you can continue making plans with each other more easily.",
     },
     {
       question: "Is it free?",
-      answer: "Yes, PlanLift offers a free tier that covers all the essential features for planning trips with your friends."
-    }
+      answer:
+        "Yes, PlanLift offers a free tier that covers all the essential features for planning trips with your friends.",
+    },
   ];
 
-  function FaqItem({ item, isOpen, onToggle }: { item: { question: string; answer: string }; isOpen: boolean; onToggle: () => void }) {
+  function FaqItem({
+    item,
+    isOpen,
+    onToggle,
+  }: {
+    item: { question: string; answer: string };
+    isOpen: boolean;
+    onToggle: () => void;
+  }) {
     return (
-      <div className={`bg-white border border-[#F2F4F7] rounded-[32px] overflow-hidden transition-all duration-300 h-fit ${isOpen ? 'shadow-sm' : ''}`}>
+      <div
+        className={`bg-white border border-[#F2F4F7] rounded-[32px] overflow-hidden transition-all duration-300 h-fit ${isOpen ? "shadow-sm" : ""}`}
+      >
         <button
           onClick={onToggle}
           className="w-full px-8 py-8 text-left flex items-start justify-between gap-4"
         >
           <div className="flex items-center gap-4 relative">
             {/* Yellow Indicator Bar */}
-            <div className={`absolute -left-8 w-1.5 h-6 rounded-r-full transition-colors ${isOpen ? 'bg-[#FFC700]' : 'bg-transparent'}`} />
+            <div
+              className={`absolute -left-8 w-1.5 h-6 rounded-r-full transition-colors ${isOpen ? "bg-[#FFC700]" : "bg-transparent"}`}
+            />
             <h3 className="text-xl md:text-[22px] font-bold text-[#1D2939]">
               {item.question}
             </h3>
@@ -57,18 +75,34 @@ export default function Index() {
 
           <div className="mt-1 flex-shrink-0">
             {isOpen ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D2939" strokeWidth="2.5">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1D2939"
+                strokeWidth="2.5"
+              >
                 <path d="M5 12h14" strokeLinecap="round" />
               </svg>
             ) : (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1D2939" strokeWidth="2.5">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#1D2939"
+                strokeWidth="2.5"
+              >
                 <path d="M12 5v14M5 12h14" strokeLinecap="round" />
               </svg>
             )}
           </div>
         </button>
 
-        <div className={`px-8 overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[500px] pb-8' : 'max-h-0'}`}>
+        <div
+          className={`px-8 overflow-hidden transition-all duration-300 ${isOpen ? "max-h-[500px] pb-8" : "max-h-0"}`}
+        >
           <p className="text-[#667085] text-lg leading-relaxed">
             {item.answer}
           </p>
@@ -130,7 +164,10 @@ export default function Index() {
               <button className="px-8 py-3 bg-[#FFC700] rounded-full text-black text-base font-bold hover:bg-[#E6B400] transition-colors">
                 Contact us
               </button>
-              <button className="px-8 py-3 border border-[#1D2939] rounded-full text-[#1D2939] text-base font-bold hover:bg-gray-50 transition-colors">
+              <button
+                onClick={() => navigate("/create-account")}
+                className="px-8 py-3 border border-[#1D2939] rounded-full text-[#1D2939] text-base font-bold hover:bg-gray-50 transition-colors"
+              >
                 Create Account
               </button>
             </div>
@@ -183,9 +220,9 @@ export default function Index() {
         <div className="absolute -top-[500px] left-1/2 -translate-x-1/2 w-full flex justify-center pointer-events-none">
           <div className="relative w-[1400px] h-[1400px]">
             {/* Outer Circle */}
-            <div className="absolute inset-0 rounded-full border border-dashed border-[#3B82F6] opacity-40" />
+            <div className="absolute inset-0 rounded-full border border-dashed border-gray-300" />
             {/* Inner Circle */}
-            <div className="absolute inset-[140px] rounded-full border border-dashed border-[#3B82F6] opacity-40" />
+            <div className="absolute inset-[140px] rounded-full border border-dashed border-gray-300" />
 
             {/* Floating Icons - Fixed Paths and precise positioning */}
             {/* Globe - Outer Top Left */}
@@ -263,13 +300,9 @@ export default function Index() {
       </section>
 
       {/* About Section - Your Smarter Way To Plan Together */}
-      <section
-        id="about"
-        className="bg-[#FDFCF6] py-16 lg:py-24"
-      >
+      <section id="about" className="bg-[#FDFCF6] py-16 lg:py-24">
         <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
-
             {/* 1. Section Header (Centered) */}
             <div className="text-center mb-16">
               <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
@@ -278,13 +311,13 @@ export default function Index() {
                 </span>
               </div>
               <h2 className="text-[36px] md:text-[56px] font-bold text-[#1D2939] leading-tight">
-                Your Smarter Way To <br className="hidden md:block" /> Plan Together
+                Your Smarter Way To <br className="hidden md:block" /> Plan
+                Together
               </h2>
             </div>
 
             {/* 2. Content Row (Two Columns) */}
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 w-full mb-16">
-
               {/* Left Column: Illustration */}
               <div className="w-full lg:w-1/2">
                 <img
@@ -298,26 +331,32 @@ export default function Index() {
               <div className="w-full lg:w-1/2 flex flex-col gap-8">
                 <div className="space-y-6">
                   <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
-                    PlanLift was created to make making plans with friends feel easier and less stressful.
+                    PlanLift was created to make making plans with friends feel
+                    easier and less stressful.
                   </p>
                   <div className="border-t border-gray-200" />
 
                   <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
-                    We started PlanLift after noticing how often plans fall apart. Many plans are not clear or decisive.
-                    Some people hesitate to initiate plans. Others worry about rejection. And sometimes conversations
-                    go back and forth without ever reaching a decision.
+                    We started PlanLift after noticing how often plans fall
+                    apart. Many plans are not clear or decisive. Some people
+                    hesitate to initiate plans. Others worry about rejection.
+                    And sometimes conversations go back and forth without ever
+                    reaching a decision.
                   </p>
                   <div className="border-t border-gray-200" />
 
                   <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
-                    PlanLift is designed to remove that friction. It helps make plans simple, clear, and decisive
-                    so everyone knows what is happening and by when.
+                    PlanLift is designed to remove that friction. It helps make
+                    plans simple, clear, and decisive so everyone knows what is
+                    happening and by when.
                   </p>
                   <div className="border-t border-gray-200" />
 
                   <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
-                    Our vision is simple. When making plans is easier, people make more of them. That means getting
-                    out of the house, spending quality time together, and building stronger real world connections.
+                    Our vision is simple. When making plans is easier, people
+                    make more of them. That means getting out of the house,
+                    spending quality time together, and building stronger real
+                    world connections.
                   </p>
                 </div>
               </div>
@@ -327,39 +366,37 @@ export default function Index() {
             <button className="px-10 py-4 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-md">
               Learn More
             </button>
-
           </div>
         </div>
       </section>
 
       {/* How It Works - 3 Easy Steps */}
-      <section
-        id="how-it-work"
-        className="bg-[#FDFCF6] py-20 lg:py-28"
-      >
+      <section id="how-it-work" className="bg-[#FDFCF6] py-20 lg:py-28">
         <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
-
             {/* 1. Section Header */}
             <div className="text-center max-w-[800px] mb-16">
               <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
-                <span className="text-[#667085] text-sm font-medium">How It Work</span>
+                <span className="text-[#667085] text-sm font-medium">
+                  How It Work
+                </span>
               </div>
               <h2 className="text-[36px] md:text-[56px] font-bold text-[#1D2939] leading-tight mb-6">
-                Plan Your Perfect Trip In Just <br className="hidden md:block" /> 3 Easy Steps.
+                Plan Your Perfect Trip In Just{" "}
+                <br className="hidden md:block" /> 3 Easy Steps.
               </h2>
               <p className="text-[#667085] text-lg md:text-xl font-normal">
-                A Simple Workflow To Create, Manage, And Share Your Travel Plans.
+                A Simple Workflow To Create, Manage, And Share Your Travel
+                Plans.
               </p>
             </div>
 
             {/* 2. Steps Flow Container */}
             <div className="w-full max-w-[1200px]">
-
               {/* Step Numbers with Dashed Line */}
               <div className="relative flex justify-between items-center max-w-[900px] mx-auto mb-10">
                 {/* Dashed Connecting Line */}
-                <div className="absolute top-1/2 left-0 w-full h-[1px] border-t border-dashed border-[#D0D5DD] -z-0"></div>
+                <div className="absolute top-1/2 left-0 w-full h-[1px] border-t border-dashed border-gray-300 -z-0"></div>
 
                 {/* Number 1 (Active) */}
                 <div className="relative z-10 w-14 h-14 rounded-full bg-[#FFC700] flex items-center justify-center text-black text-xl font-bold border-4 border-[#FDFCF6]">
@@ -378,16 +415,29 @@ export default function Index() {
               {/* Steps Grid (Titles & Descriptions) */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-12">
                 <div>
-                  <h3 className="text-[22px] md:text-[24px] font-bold text-[#1D2939] mb-3">Creating A Clear Plan</h3>
-                  <p className="text-[#667085] text-lg">Turn Your Travel Ideas Into A Real Plan, Instantly.</p>
+                  <h3 className="text-[22px] md:text-[24px] font-bold text-[#1D2939] mb-3">
+                    Creating A Clear Plan
+                  </h3>
+                  <p className="text-[#667085] text-lg">
+                    Turn Your Travel Ideas Into A Real Plan, Instantly.
+                  </p>
                 </div>
                 <div>
-                  <h3 className="text-[22px] md:text-[24px] font-bold text-[#1D2939] mb-3">Sharing It With Friends</h3>
-                  <p className="text-[#667085] text-lg">Send Your Plan To Friends Instantly And Collaborate In Real Time.</p>
+                  <h3 className="text-[22px] md:text-[24px] font-bold text-[#1D2939] mb-3">
+                    Sharing It With Friends
+                  </h3>
+                  <p className="text-[#667085] text-lg">
+                    Send Your Plan To Friends Instantly And Collaborate In Real
+                    Time.
+                  </p>
                 </div>
                 <div>
-                  <h3 className="text-[22px] md:text-[24px] font-bold text-[#1D2939] mb-3">Get Responses</h3>
-                  <p className="text-[#667085] text-lg">Connect, Collaborate, And Create Unforgettable Journeys.</p>
+                  <h3 className="text-[22px] md:text-[24px] font-bold text-[#1D2939] mb-3">
+                    Get Responses
+                  </h3>
+                  <p className="text-[#667085] text-lg">
+                    Connect, Collaborate, And Create Unforgettable Journeys.
+                  </p>
                 </div>
               </div>
 
@@ -395,41 +445,51 @@ export default function Index() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Card 1 */}
                 <div className="bg-[#FCFCFD] border border-[#F2F4F7] rounded-[32px] p-8 flex items-center justify-center min-h-[350px]">
-                  <img src="/step1Img.png" alt="Step 1" className="max-w-full h-auto object-contain" />
+                  <img
+                    src="/step1Img.png"
+                    alt="Step 1"
+                    className="max-w-full h-auto object-contain"
+                  />
                 </div>
                 {/* Card 2 */}
                 <div className="bg-[#FCFCFD] border border-[#F2F4F7] rounded-[32px] p-8 flex items-center justify-center min-h-[350px]">
-                  <img src="/Step2Img.png" alt="Step 2" className="max-w-full h-auto object-contain" />
+                  <img
+                    src="/Step2Img.png"
+                    alt="Step 2"
+                    className="max-w-full h-auto object-contain"
+                  />
                 </div>
                 {/* Card 3 */}
                 <div className="bg-[#FCFCFD] border border-[#F2F4F7] rounded-[32px] p-8 flex items-center justify-center min-h-[350px]">
-                  <img src="/Step3Img.png" alt="Step 3" className="max-w-full h-auto object-contain" />
+                  <img
+                    src="/Step3Img.png"
+                    alt="Step 3"
+                    className="max-w-full h-auto object-contain"
+                  />
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section
-        id="pricing"
-        className="bg-[#FDFCF6] py-20 lg:py-28"
-      >
+      <section id="pricing" className="bg-[#FDFCF6] py-20 lg:py-28">
         <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
-
           {/* Top Content: Header & Rocket */}
           <div className="flex flex-col lg:flex-row items-start justify-between gap-12 mb-16">
             <div className="max-w-[600px]">
               <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
-                <span className="text-[#667085] text-sm font-medium">Pricing</span>
+                <span className="text-[#667085] text-sm font-medium">
+                  Pricing
+                </span>
               </div>
               <h2 className="text-[40px] md:text-[64px] font-bold text-[#1D2939] leading-[1.1] mb-6 font-satoshi">
                 Flexible Pricing for <br /> Every Need
               </h2>
               <p className="text-[#667085] text-lg md:text-xl max-w-[450px]">
-                Planlift Makes Trip Planning Easy, Fast, And Enjoyable For Everyone.
+                Planlift Makes Trip Planning Easy, Fast, And Enjoyable For
+                Everyone.
               </p>
             </div>
 
@@ -444,17 +504,22 @@ export default function Index() {
 
           {/* Pricing Cards Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1240px]">
-
             {/* 1. Free Plan Card */}
             <div className="bg-white rounded-[32px] border border-gray-100 p-8 flex flex-col justify-between shadow-sm">
               <div className="flex items-start">
                 {/* Price Column */}
                 <div className="flex-1 pr-8">
                   <div className="inline-flex px-4 py-1.5 rounded-full border border-gray-100 mb-8">
-                    <span className="text-sm font-medium text-[#1D2939]">Free</span>
+                    <span className="text-sm font-medium text-[#1D2939]">
+                      Free
+                    </span>
                   </div>
-                  <div className="text-[64px] font-bold text-[#1D2939] leading-none mb-2">$00</div>
-                  <p className="text-[#667085] text-base">Per Brand, Per Month</p>
+                  <div className="text-[64px] font-bold text-[#1D2939] leading-none mb-2">
+                    $00
+                  </div>
+                  <p className="text-[#667085] text-base">
+                    Per Brand, Per Month
+                  </p>
                 </div>
 
                 {/* Vertical Divider */}
@@ -462,13 +527,34 @@ export default function Index() {
 
                 {/* Benefits Column */}
                 <div className="flex-1 pl-8 pt-4">
-                  <p className="text-[#1D2939] font-bold text-lg mb-4">Benefits:</p>
+                  <p className="text-[#1D2939] font-bold text-lg mb-4">
+                    Benefits:
+                  </p>
                   <ul className="space-y-4">
-                    {['Create up to 5 plans', 'Group tour planning', 'Share with friends', 'Cancel anytime'].map((item) => (
-                      <li key={item} className="flex items-center gap-3 text-[#667085]">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    {[
+                      "Create up to 5 plans",
+                      "Group tour planning",
+                      "Share with friends",
+                      "Cancel anytime",
+                    ].map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-center gap-3 text-[#667085]"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                        >
                           <circle cx="10" cy="10" r="10" fill="#F2F4F7" />
-                          <path d="M14 7L8.5 12.5L6 10" stroke="#1D2939" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <path
+                            d="M14 7L8.5 12.5L6 10"
+                            stroke="#1D2939"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                         <span className="text-sm md:text-base">{item}</span>
                       </li>
@@ -488,13 +574,26 @@ export default function Index() {
                 {/* Price Column */}
                 <div className="flex-1 pr-8">
                   <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#FFC700] mb-8 bg-[#FFF9E5]">
-                    <span className="text-sm font-medium text-[#1D2939]">Premium</span>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <span className="text-sm font-medium text-[#1D2939]">
+                      Premium
+                    </span>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
                       <path d="M6 9l6 6 6-6" transform="rotate(-180 12 12)" />
                     </svg>
                   </div>
-                  <div className="text-[64px] font-bold text-[#1D2939] leading-none mb-2">$3.99</div>
-                  <p className="text-[#667085] text-base">Per Brand, Per Year</p>
+                  <div className="text-[64px] font-bold text-[#1D2939] leading-none mb-2">
+                    $3.99
+                  </div>
+                  <p className="text-[#667085] text-base">
+                    Per Brand, Per Year
+                  </p>
                 </div>
 
                 {/* Vertical Divider */}
@@ -502,13 +601,34 @@ export default function Index() {
 
                 {/* Benefits Column */}
                 <div className="flex-1 pl-8 pt-4">
-                  <p className="text-[#1D2939] font-bold text-lg mb-4">Benefits:</p>
+                  <p className="text-[#1D2939] font-bold text-lg mb-4">
+                    Benefits:
+                  </p>
                   <ul className="space-y-4">
-                    {['Unlimited plans', 'All Pro features', 'Best value yearly plan', 'Cancel anytime'].map((item) => (
-                      <li key={item} className="flex items-center gap-3 text-[#667085]">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    {[
+                      "Unlimited plans",
+                      "All Pro features",
+                      "Best value yearly plan",
+                      "Cancel anytime",
+                    ].map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-center gap-3 text-[#667085]"
+                      >
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                        >
                           <circle cx="10" cy="10" r="10" fill="#FFF9E5" />
-                          <path d="M14 7L8.5 12.5L6 10" stroke="#FFC700" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          <path
+                            d="M14 7L8.5 12.5L6 10"
+                            stroke="#FFC700"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                         <span className="text-sm md:text-base">{item}</span>
                       </li>
@@ -521,7 +641,6 @@ export default function Index() {
                 Select Plan
               </button>
             </div>
-
           </div>
         </div>
       </section>
@@ -530,7 +649,6 @@ export default function Index() {
       {/* FAQ Section */}
       <section id="faq" className="py-20 lg:py-28 bg-[#FDFCF6]">
         <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
-
           {/* Header Row: Title + Illustration */}
           <div className="flex flex-col lg:flex-row items-start justify-between gap-10 mb-16">
             <div className="max-w-[700px]">
@@ -541,7 +659,8 @@ export default function Index() {
                 Frequently asked questions
               </h2>
               <p className="text-[#667085] text-lg md:text-xl max-w-[550px]">
-                Clear Answers To Help You Use Planlift With Confidence And Enjoy Smooth, Stress-Free Tour Planning With Your Friends.
+                Clear Answers To Help You Use Planlift With Confidence And Enjoy
+                Smooth, Stress-Free Tour Planning With Your Friends.
               </p>
             </div>
 
@@ -556,13 +675,19 @@ export default function Index() {
 
           {/* FAQ Columns: Split into two independent flex containers */}
           <div className="flex flex-col lg:flex-row items-start gap-6 mb-16">
-
             {/* Left Column (Items 1, 2, 3) */}
             <div className="flex-1 flex flex-col gap-6 w-full">
               {faqData.slice(0, 3).map((item, index) => {
                 const actualIndex = index; // 0, 1, 2
                 const isOpen = openItems.includes(actualIndex);
-                return <FaqItem key={actualIndex} item={item} isOpen={isOpen} onToggle={() => toggleFaq(actualIndex)} />;
+                return (
+                  <FaqItem
+                    key={actualIndex}
+                    item={item}
+                    isOpen={isOpen}
+                    onToggle={() => toggleFaq(actualIndex)}
+                  />
+                );
               })}
             </div>
 
@@ -571,7 +696,14 @@ export default function Index() {
               {faqData.slice(3, 6).map((item, index) => {
                 const actualIndex = index + 2; // 3, 4, 5
                 const isOpen = openItems.includes(actualIndex);
-                return <FaqItem key={actualIndex} item={item} isOpen={isOpen} onToggle={() => toggleFaq(actualIndex)} />;
+                return (
+                  <FaqItem
+                    key={actualIndex}
+                    item={item}
+                    isOpen={isOpen}
+                    onToggle={() => toggleFaq(actualIndex)}
+                  />
+                );
               })}
             </div>
           </div>
