@@ -284,8 +284,30 @@ export default function Index() {
           </p>
 
           {/* Download Button with Shadow to match Figma */}
-          <button className="px-10 py-5 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-[0_10px_30px_-10px_rgba(255,199,0,0.5)]">
-            Download App
+          <button className="group relative px-10 py-5 bg-[#FFC700] rounded-full overflow-hidden text-lg font-bold text-[#1D2939] shadow-[0_10px_30px_-10px_rgba(255,199,0,0.5)] transition-all active:scale-95">
+            {/* The Animated Text Wrapper */}
+            <div className="relative flex items-center justify-center overflow-hidden">
+              {"Download App".split("").map((char, index) => (
+                <span
+                  key={index}
+                  className="relative inline-block transition-transform duration-500 ease-in-out"
+                  style={{
+                    // This creates the staggered "wave" effect
+                    transitionDelay: `${index * 0.02}s`,
+                  }}
+                >
+                  {/* Original Text (Slides Up) */}
+                  <span className="inline-block transition-transform duration-500 group-hover:-translate-y-full">
+                    {char === " " ? "\u00A0" : char}
+                  </span>
+
+                  {/* Hover Text (Slides in from Below) */}
+                  <span className="absolute left-0 top-0 inline-block translate-y-full transition-transform duration-500 group-hover:translate-y-0">
+                    {char === " " ? "\u00A0" : char}
+                  </span>
+                </span>
+              ))}
+            </div>
           </button>
 
           {/* Hero Main Image (Phone + Avatars) - Fixed Path */}
