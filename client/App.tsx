@@ -10,7 +10,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import CreateAccount from "./pages/CreateAccount";
 import Verification from "./pages/Verification";
-
+import CompleteProfile from "./pages/CompleteProfile";
+import ContactUs from "./pages/ContactUs";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -23,6 +24,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/create-account" element={<CreateAccount />} />
           <Route path="/verification" element={<Verification />} />
+          <Route path="/complete-profile" element={<CompleteProfile />} />
+          <Route path="/contact-us" element={<ContactUs />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
