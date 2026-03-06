@@ -1,19 +1,49 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch, getErrorMessage } from "@/lib/api";
+import {
+  clearPendingOtpContext,
+  getPendingOtpContext,
+  setAuthToken,
+} from "@/lib/auth";
+
+type VerifyOtpResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    needs_onboarding: boolean;
+    token: {
+      tokenType: string;
+      accessToken: string;
+      refreshToken: string;
+      expiresIn: number;
+    };
+  };
+};
 
 export default function Verification() {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(30);
+  const [error, setError] = useState<string>("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const navigate = useNavigate();
 
+  const pending = useMemo(() => getPendingOtpContext(), []);
+
   useEffect(() => {
+    if (!pending) {
+      navigate("/create-account", { replace: true });
+      return;
+    }
+
     const interval = setInterval(() => {
       setTimer((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [navigate, pending]);
 
   const handleChange = (index: number, value: string) => {
     const sanitizedValue = value.replace(/\D/g, "");
@@ -39,18 +69,72 @@ export default function Verification() {
   };
 
   const handleVerify = () => {
-    const verificationCode = code.join("");
-    if (verificationCode.length === 6) {
-      console.log("Verification code:", verificationCode);
-    }
-    navigate("/complete-profile");
+    const run = async () => {
+      if (!pending) return;
+
+      const otp = code.join("");
+      if (otp.length !== 6) return;
+
+      try {
+        setIsVerifying(true);
+        setError("");
+
+        const res = await apiFetch<VerifyOtpResponse>("/verify-otp", {
+          method: "POST",
+          auth: false,
+          body: {
+            country_code: pending.country_code,
+            phone_number: pending.phone_number,
+            otp,
+          },
+        });
+
+        setAuthToken({
+          tokenType: res.data.token.tokenType,
+          accessToken: res.data.token.accessToken,
+          refreshToken: res.data.token.refreshToken,
+          expiresIn: res.data.token.expiresIn,
+        });
+        clearPendingOtpContext();
+
+        navigate(res.data.needs_onboarding ? "/complete-profile" : "/", {
+          replace: true,
+        });
+      } catch (e) {
+        setError(getErrorMessage(e));
+      } finally {
+        setIsVerifying(false);
+      }
+    };
+
+    void run();
   };
 
-  const handleResend = () => {
-    if (timer === 0) {
+  const handleResend = async () => {
+    if (!pending) return;
+    if (timer !== 0) return;
+
+    try {
+      setIsResending(true);
+      setError("");
+
+      await apiFetch<{ success: boolean; message: string }>("/send-otp", {
+        method: "POST",
+        auth: false,
+        body: {
+          country_code: pending.country_code,
+          phone_number: pending.phone_number,
+          type: 3,
+        },
+      });
+
       setTimer(30);
       setCode(["", "", "", "", "", ""]);
       inputRefs.current[0]?.focus();
+    } catch (e) {
+      setError(getErrorMessage(e));
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -92,7 +176,9 @@ export default function Verification() {
             <p className="text-[15px] sm:text-[16px] text-[#667085] mb-10">
               We've sent a 6-digit code to{" "}
               <span className="text-[#1D2939] font-semibold">
-                +91 98989 XXXXX
+                {pending
+                  ? `${pending.country_code} ${pending.phone_number.slice(0, 5)} ${"X".repeat(Math.max(0, pending.phone_number.length - 5))}`
+                  : "+91 XXXXX XXXXX"}
               </span>
             </p>
 
@@ -123,14 +209,14 @@ export default function Verification() {
               <div className="flex items-center justify-center gap-1 mt-6 mb-8">
                 <button
                   onClick={handleResend}
-                  disabled={timer > 0}
+                  disabled={timer > 0 || isResending}
                   className={`text-[14px] ${
-                    timer > 0
+                    timer > 0 || isResending
                       ? "text-[#667085] cursor-not-allowed"
                       : "text-[#1D2939] font-medium hover:underline"
                   }`}
                 >
-                  Resend Code
+                  {isResending ? "Resending..." : "Resend Code"}
                 </button>
                 {timer > 0 && (
                   <span className="text-[14px] font-semibold text-[#1D2939]">
@@ -139,13 +225,17 @@ export default function Verification() {
                 )}
               </div>
 
+              {error && (
+                <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+              )}
+
               {/* Verify Button - Removed shadow, tweaked hover color */}
               <button
                 onClick={handleVerify}
-                disabled={code.some((d) => !d)}
+                disabled={code.some((d) => !d) || isVerifying}
                 className="w-full h-[52px] bg-[#FFC700] hover:bg-[#F2BD00] disabled:bg-[#FFC700]/60 disabled:cursor-not-allowed rounded-full text-[16px] font-bold text-[#1D2939] transition-all active:scale-[0.98]"
               >
-                Verify & Continue
+                {isVerifying ? "Verifying..." : "Verify & Continue"}
               </button>
             </div>
           </div>

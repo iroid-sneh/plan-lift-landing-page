@@ -112,46 +112,46 @@ export default function Index() {
     <div className="min-h-screen bg-planlift-cream">
       {/* 1. NAVBAR */}
       <header className="bg-[#FDFCF6]">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px] py-6">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px] py-6">
           <div className="flex items-center justify-between">
             {/* Logo - Fixed Path */}
             <Link to="/" className="flex items-center gap-4">
               <img
                 src="/logo.png"
                 alt="Planlift Logo"
-                className="h-24 w-24 object-contain"
+                className="h-16 w-16 object-contain"
               />
-              <span className="text-[24px] font-bold text-[#1D2939] font-satoshi">
+              <span className="text-[22px] font-bold text-[#1D2939] font-satoshi">
                 planlark
               </span>
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-14">
-              <a href="#home" className="text-[#1D2939] text-2xl font-bold">
+              <a href="#home" className="text-[#1D2939] text-xl font-bold">
                 Home
               </a>
               <a
                 href="#about"
-                className="text-[#667085] text-2xl hover:text-[#1D2939] transition-colors"
+                className="text-[#667085] text-xl hover:text-[#1D2939] transition-colors"
               >
                 About
               </a>
               <a
                 href="#how-it-work"
-                className="text-[#667085] text-2xl hover:text-[#1D2939] transition-colors"
+                className="text-[#667085] text-xl hover:text-[#1D2939] transition-colors"
               >
                 How It Work
               </a>
               <a
                 href="#pricing"
-                className="text-[#667085] text-2xl hover:text-[#1D2939] transition-colors"
+                className="text-[#667085] text-xl hover:text-[#1D2939] transition-colors"
               >
                 Pricing
               </a>
               <a
                 href="#faq"
-                className="text-[#667085] text-2xl hover:text-[#1D2939] transition-colors"
+                className="text-[#667085] text-xl hover:text-[#1D2939] transition-colors"
               >
                 FAQ
               </a>
@@ -161,13 +161,13 @@ export default function Index() {
             <div className="hidden md:flex items-center gap-4">
               <button
                 onClick={() => navigate("/contact-us")}
-                className="px-8 py-3 bg-[#FFC700] rounded-full text-black text-xl font-bold hover:bg-[#E6B400] transition-colors"
+                className="px-8 py-3 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-colors"
               >
                 Contact us
               </button>
               <button
                 onClick={() => navigate("/create-account")}
-                className="px-8 py-3 border border-[#1D2939] rounded-full text-[#1D2939] text-xl font-bold hover:bg-gray-50 transition-colors"
+                className="px-8 py-3 border border-[#1D2939] rounded-full text-[#1D2939] text-lg font-bold hover:bg-gray-50 transition-colors"
               >
                 Register/Login
               </button>
@@ -177,8 +177,8 @@ export default function Index() {
       </header>
 
       {/* 2. EMAIL / NEWSLETTER ROW */}
-      <div className="bg-[#282827] py-5">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+      <div className="bg-[#282827] py-4">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <p className="text-white text-[20px] font-normal font-satoshi">
               We Would Love To Hear From You.
@@ -253,7 +253,7 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="relative z-10 max-w-[1800px] mx-auto px-6 text-center">
+        <div className="relative z-10 max-w-[1440px] mx-auto px-6 text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-gray-200 bg-white/80 backdrop-blur-sm mb-8">
             <div className="flex items-center -space-x-2">
@@ -277,7 +277,7 @@ export default function Index() {
           </div>
 
           {/* Hero Content */}
-          <h1 className="text-[42px] md:text-[68px] font-bold text-[#1D2939] leading-[1.1] mb-6 max-w-[950px] mx-auto font-satoshi">
+          <h1 className="text-[32px] md:text-[68px] font-bold text-[#1D2939] leading-[1.1] mb-6 max-w-[950px] mx-auto font-satoshi">
             Turn Group Chats <br /> Into Actual Plans
           </h1>
           <p className="text-[#667085] text-xl md:text-[22px] mb-12 max-w-[700px] mx-auto font-normal">
@@ -313,7 +313,7 @@ export default function Index() {
           </button>
 
           {/* Hero Main Image (Phone + Avatars) - Fixed Path */}
-          <div className="mt-20">
+          <div>
             <img
               src="/heroImage.png"
               alt="App interface"
@@ -324,23 +324,23 @@ export default function Index() {
       </section>
 
       {/* About Section - Your Smarter Way To Plan Together */}
-      <section id="about" className="bg-[#FDFCF6] py-16 lg:py-24">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+      <section id="about" className="bg-[#FDFCF6] py-14 lg:py-20">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
             {/* 1. Section Header (Reduced bottom margin to close the gap) */}
-            <div className="text-center mb-4 md:mb-6">
-              <div className="inline-flex px-4 py-2 rounded-full border border-[#2828271A] mb-4 bg-transparent">
+            <div className="text-center mb-4 md:mb-5">
+              <div className="inline-flex px-4 py-1.5 rounded-full border border-[#2828271A] mb-3 bg-transparent">
                 <span className="text-[#28282799] text-sm font-medium">
                   About Us
                 </span>
               </div>
-              <h2 className="text-[36px] md:text-[56px] font-bold text-[#1D2939] leading-tight">
+              <h2 className="text-[28px] md:text-[44px] font-bold text-[#1D2939] leading-tight">
                 Decisions, Not <br /> Discussions
               </h2>
             </div>
 
             {/* 2. Content Row (Reduced gap from title section) */}
-            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-20 w-full mb-16">
+            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16 w-full mb-12">
               {/* Left Column: Illustration */}
               <div className="w-full lg:w-1/2">
                 <img
@@ -353,28 +353,28 @@ export default function Index() {
               {/* Right Column: Text with Dividers */}
               <div className="w-full lg:w-1/2 flex flex-col gap-8">
                 <div className="space-y-6">
-                  <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
+                  <p className="text-[#475467] text-base md:text-lg leading-relaxed">
                     PlanLift was created to solve a simple but frustrating
                     problem: <br /> making plans with friends often goes
                     nowhere.
                   </p>
                   <div className="border-t border-gray-200" />
 
-                  <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
+                  <p className="text-[#475467] text-base md:text-lg leading-relaxed">
                     Group chats drag on. Options pile up. People hesitate and
                     delay. In the <br /> end, nothing gets decided and plans
                     fall apart.
                   </p>
                   <div className="border-t border-gray-200" />
 
-                  <p className="text-[#475467] text-lg md:text-xl leading-relaxed">
+                  <p className="text-[#475467] text-base md:text-lg leading-relaxed">
                     PlanLift flips this by removing endless options. Instead, it
                     promotes <br /> clear commitments with a single plan and a
                     deadline to respond.
                   </p>
                   <div className="border-t border-gray-200" />
 
-                  <h2 className="text-[#282827] text-2xl md:text-3xl font-medium leading-relaxed">
+                  <h2 className="text-[#282827] text-lg md:text-2xl font-medium leading-relaxed">
                     Clear plans. Firm deadlines. Real results.
                   </h2>
                 </div>
@@ -385,21 +385,21 @@ export default function Index() {
       </section>
 
       {/* How It Works - 3 Easy Steps */}
-      <section id="how-it-work" className="bg-[#FDFCF6] py-20 lg:py-12">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+      <section id="how-it-work" className="bg-[#FDFCF6] py-16 lg:py-20">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
             {/* 1. Section Header */}
-            <div className="text-center max-w-[800px] mb-16">
-              <div className="inline-flex px-4 py-2 rounded-full border border-[#2828271A] mb-2 bg-transparent">
+            <div className="text-center max-w-[800px] mb-10">
+              <div className="inline-flex px-4 py-1.5 rounded-full border border-[#2828271A] mb-2 bg-transparent">
                 <span className="text-[#28282799] text-sm font-medium">
                   How It Work
                 </span>
               </div>
-              <h2 className="text-[36px] md:text-[56px] font-bold text-[#282827] leading-tight mb-6">
+              <h2 className="text-[28px] md:text-[44px] font-bold text-[#282827] leading-tight mb-4">
                 Plan Your Perfect Trip In Just{" "}
                 <br className="hidden md:block" /> 3 Easy Steps.
               </h2>
-              <p className="text-[#667085] text-lg md:text-xl font-normal">
+              <p className="text-[#667085] text-base md:text-lg font-normal">
                 A Simple Workflow To Create, Manage, And Share Your Travel
                 Plans.
               </p>
@@ -408,48 +408,48 @@ export default function Index() {
             {/* 2. Steps Flow Container */}
             <div className="w-full max-w-[1200px]">
               {/* Step Numbers with Dashed Line */}
-              <div className="relative flex justify-between items-center max-w-[900px] mx-auto mb-10">
+              <div className="relative flex justify-between items-center max-w-[900px] mx-auto mb-8">
                 {/* Dashed Connecting Line */}
                 <div className="absolute top-1/2 inset-x-16 h-px -z-0 bg-[repeating-linear-gradient(to_right,rgba(209,213,219,1)_0,rgba(209,213,219,1)_8px,transparent_8px,transparent_16px)]"></div>
 
                 {/* Number 1 (Active) */}
-                <div className="relative z-10 w-14 h-14 rounded-full bg-[#FFC700] flex items-center justify-center text-black text-xl font-bold border-4 border-[#FDFCF6]">
+                <div className="relative z-10 w-12 h-12 rounded-full bg-[#FFC700] flex items-center justify-center text-black text-lg font-bold border-4 border-[#FDFCF6]">
                   1
                 </div>
                 {/* Number 2 */}
-                <div className="relative z-10 w-14 h-14 rounded-full bg-[#F2F4F7] flex items-center justify-center text-[#667085] text-xl font-bold border-4 border-[#FDFCF6]">
+                <div className="relative z-10 w-12 h-12 rounded-full bg-[#F2F4F7] flex items-center justify-center text-[#667085] text-lg font-bold border-4 border-[#FDFCF6]">
                   2
                 </div>
                 {/* Number 3 */}
-                <div className="relative z-10 w-14 h-14 rounded-full bg-[#F2F4F7] flex items-center justify-center text-[#667085] text-xl font-bold border-4 border-[#FDFCF6]">
+                <div className="relative z-10 w-12 h-12 rounded-full bg-[#F2F4F7] flex items-center justify-center text-[#667085] text-lg font-bold border-4 border-[#FDFCF6]">
                   3
                 </div>
               </div>
 
               {/* Steps Grid (Titles & Descriptions) */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-12">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-10">
                 <div>
-                  <h3 className="text-[22px] md:text-[24px] font-medium text-[#1D2939] mb-3">
+                  <h3 className="text-[20px] md:text-[22px] font-medium text-[#1D2939] mb-2">
                     Creating A Clear Plan
                   </h3>
-                  <p className="text-[#667085] text-lg">
+                  <p className="text-[#667085] text-base md:text-lg">
                     Turn Your Travel Ideas Into A Real <br /> Plan, Instantly.
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-[22px] md:text-[24px] font-medium text-[#1D2939] mb-3">
+                  <h3 className="text-[20px] md:text-[22px] font-medium text-[#1D2939] mb-2">
                     Sharing It With Friends
                   </h3>
-                  <p className="text-[#667085] text-lg">
+                  <p className="text-[#667085] text-base md:text-lg">
                     Send Your Plan To Friends Instantly <br /> And Collaborate
                     In Real Time.
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-[22px] md:text-[24px] font-medium text-[#1D2939] mb-3">
+                  <h3 className="text-[20px] md:text-[22px] font-medium text-[#1D2939] mb-2">
                     Get Responses
                   </h3>
-                  <p className="text-[#667085] text-lg">
+                  <p className="text-[#667085] text-base md:text-lg">
                     Connect, Collaborate, And Create <br /> Unforgettable
                     Journeys.
                   </p>
@@ -459,7 +459,7 @@ export default function Index() {
               {/* Step Image Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Card 1 */}
-                <div className="rounded-[32px] border border-gray-200 p-8 flex items-center justify-center min-h-[350px]">
+                <div className="rounded-[32px] border border-gray-200 p-6 flex items-center justify-center min-h-[320px]">
                   <img
                     src="/step1Img.png"
                     alt="Step 1"
@@ -467,15 +467,15 @@ export default function Index() {
                   />
                 </div>
                 {/* Card 2 */}
-                <div className="rounded-[32px] border border-gray-200 p-8 flex items-center justify-center min-h-[150px]">
+                <div className="rounded-[32px] border border-gray-200 p-6 flex items-center justify-center min-h-[180px]">
                   <img
                     src="/Step2Img.png"
                     alt="Step 2"
-                    className="max-w-full h-[300px] object-contain"
+                    className="max-w-full h-[260px] object-contain"
                   />
                 </div>
                 {/* Card 3 */}
-                <div className="rounded-[32px] border border-gray-200 p-8 flex items-center justify-center min-h-[350px]">
+                <div className="rounded-[32px] border border-gray-200 p-6 flex items-center justify-center min-h-[320px]">
                   <img
                     src="/Step3Img.png"
                     alt="Step 3"
@@ -489,20 +489,20 @@ export default function Index() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="bg-[#FDFCF6] py-20 lg:py-28">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+      <section id="pricing" className="bg-[#FDFCF6] py-16 lg:py-24">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           {/* Top Content: Header & Rocket */}
-          <div className="flex flex-col lg:flex-row items-start justify-between gap-12 mb-16">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-10 mb-14">
             <div className="max-w-[600px]">
-              <div className="inline-flex px-4 py-2 rounded-full border border-[#2828271A] mb-6 bg-transparent">
+              <div className="inline-flex px-4 py-1.5 rounded-full border border-[#2828271A] mb-4 bg-transparent">
                 <span className="text-[#28282799] text-sm font-medium">
                   Pricing
                 </span>
               </div>
-              <h2 className="text-[40px] md:text-[64px] font-bold text-[#282827] leading-[1.1] mb-6 font-satoshi">
+              <h2 className="text-[30px] md:text-[48px] font-bold text-[#282827] leading-[1.1] mb-4 font-satoshi">
                 Flexible Pricing for <br /> Every Need
               </h2>
-              <p className="text-[#667085] text-lg md:text-xl max-w-[550px]">
+              <p className="text-[#667085] text-base md:text-lg max-w-[550px]">
                 Planlift Makes Trip Planning Easy, Fast, And Enjoyable <br />{" "}
                 For Everyone.
               </p>
@@ -520,29 +520,29 @@ export default function Index() {
           {/* Pricing Cards Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1240px]">
             {/* 1. Free Plan Card */}
-            <div className="rounded-[32px] border border-gray-100 p-8 flex flex-col justify-between shadow-sm">
+            <div className="rounded-[32px] border border-gray-100 p-7 flex flex-col justify-between shadow-sm">
               <div className="flex items-start">
                 {/* Price Column */}
                 <div className="flex-1 pr-8">
-                  <div className="inline-flex px-4 py-1.5 rounded-full border border-gray-100 mb-8">
+                  <div className="inline-flex px-4 py-1.5 rounded-full border border-gray-100 mb-6">
                     <span className="text-sm font-medium text-[#1D2939]">
                       Free
                     </span>
                   </div>
-                  <div className="text-[64px] font-bold text-[#1D2939] leading-none mb-2">
+                  <div className="text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
                     $00
                   </div>
-                  <p className="text-[#667085] text-base">
+                  <p className="text-[#667085] text-sm md:text-base">
                     Per Brand, Per Month
                   </p>
                 </div>
 
                 {/* Vertical Divider */}
-                <div className="w-[1px] h-32 border-l border-dashed border-gray-300 mx-2 mt-12" />
+                <div className="w-[1px] h-28 border-l border-dashed border-gray-300 mx-2 mt-10" />
 
                 {/* Benefits Column */}
                 <div className="flex-1 pl-8 pt-4">
-                  <p className="text-[#1D2939] font-bold text-lg mb-4">
+                  <p className="text-[#1D2939] font-bold text-base md:text-lg mb-3">
                     Benefits:
                   </p>
                   <ul className="space-y-4">
@@ -571,24 +571,24 @@ export default function Index() {
                             strokeLinejoin="round"
                           />
                         </svg>
-                        <span className="text-sm md:text-base">{item}</span>
+                        <span className="text-xs md:text-sm">{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
 
-              <button className="w-full mt-10 py-4 bg-[#F2F4F7] rounded-full text-[#1D2939] text-lg font-bold hover:bg-gray-200 transition-colors">
+              <button className="w-full mt-8 py-3 bg-[#F2F4F7] rounded-full text-[#1D2939] text-base md:text-lg font-bold hover:bg-gray-200 transition-colors">
                 Select Plan
               </button>
             </div>
 
             {/* 2. Premium Plan Card */}
-            <div className="rounded-[32px] border-2 border-[#FFC700] p-8 flex flex-col justify-between shadow-[0_20px_50px_-15px_rgba(255,199,0,0.3)] relative">
+            <div className="rounded-[32px] border-2 border-[#FFC700] p-7 flex flex-col justify-between shadow-[0_20px_50px_-15px_rgba(255,199,0,0.3)] relative">
               <div className="flex items-start">
                 {/* Price Column */}
                 <div className="flex-1 pr-8">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#FFC700] mb-8 bg-[#FFF9E5]">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#FFC700] mb-6 bg-[#FFF9E5]">
                     <span className="text-sm font-medium text-[#1D2939]">
                       Premium
                     </span>
@@ -603,20 +603,20 @@ export default function Index() {
                       <path d="M6 9l6 6 6-6" transform="rotate(-180 12 12)" />
                     </svg>
                   </div>
-                  <div className="text-[64px] font-bold text-[#1D2939] leading-none mb-2">
+                  <div className="text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
                     $3.99
                   </div>
-                  <p className="text-[#667085] text-base">
+                  <p className="text-[#667085] text-sm md:text-base">
                     Per Brand, Per Year
                   </p>
                 </div>
 
                 {/* Vertical Divider */}
-                <div className="w-[1px] h-32 border-l border-dashed border-gray-300 mx-2 mt-12" />
+                <div className="w-[1px] h-28 border-l border-dashed border-gray-300 mx-2 mt-10" />
 
                 {/* Benefits Column */}
                 <div className="flex-1 pl-8 pt-4">
-                  <p className="text-[#1D2939] font-bold text-lg mb-4">
+                  <p className="text-[#1D2939] font-bold text-base md:text-lg mb-3">
                     Benefits:
                   </p>
                   <ul className="space-y-4">
@@ -645,14 +645,14 @@ export default function Index() {
                             strokeLinejoin="round"
                           />
                         </svg>
-                        <span className="text-sm md:text-base">{item}</span>
+                        <span className="text-xs md:text-sm">{item}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
 
-              <button className="w-full mt-10 py-4 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-colors flex items-center justify-center gap-2">
+              <button className="w-full mt-8 py-3 bg-[#FFC700] rounded-full text-black text-base md:text-lg font-bold hover:bg-[#E6B400] transition-colors flex items-center justify-center gap-2">
                 Select Plan
               </button>
             </div>
@@ -661,18 +661,20 @@ export default function Index() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 lg:py-28 bg-[#FDFCF6]">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+      <section id="faq" className="py-16 lg:py-24 bg-[#FDFCF6]">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           {/* Header Row: Title + Illustration */}
-          <div className="flex flex-col lg:flex-row items-start justify-between gap-10 mb-16">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-10 mb-12">
             <div className="max-w-[900px]">
-              <div className="inline-flex px-4 py-2 rounded-full border border-[#2828271A] mb-6 bg-transparent">
-                <span className="text-[#28282799] text-sm font-medium">FAQ</span>
+              <div className="inline-flex px-4 py-1.5 rounded-full border border-[#2828271A] mb-4 bg-transparent">
+                <span className="text-[#28282799] text-sm font-medium">
+                  FAQ
+                </span>
               </div>
-              <h2 className="text-[40px] md:text-[64px] font-bold text-[#282827] leading-[1.1] mb-6 font-satoshi">
+              <h2 className="text-[30px] md:text-[48px] font-bold text-[#282827] leading-[1.1] mb-4 font-satoshi">
                 Frequently asked questions
               </h2>
-              <p className="text-[#667085] text-lg md:text-xl max-w-[550px]">
+              <p className="text-[#667085] text-base md:text-lg max-w-[550px]">
                 Clear Answers To Help You Use Planlift With Confidence And Enjoy
                 Smooth, Stress-Free Tour Planning With Your Friends.
               </p>
@@ -688,7 +690,7 @@ export default function Index() {
           </div>
 
           {/* FAQ Columns: Split into two independent flex containers */}
-          <div className="flex flex-col lg:flex-row items-start gap-6 mb-16">
+          <div className="flex flex-col lg:flex-row items-start gap-6 mb-12">
             {/* Left Column (Items 1, 2, 3) */}
             <div className="flex-1 flex flex-col gap-6 w-full">
               {faqData.slice(0, 3).map((item, index) => {
@@ -726,7 +728,7 @@ export default function Index() {
           <div className="flex justify-center">
             <button
               onClick={() => navigate("/contact-us")}
-              className="px-12 py-5 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-md"
+              className="px-10 py-4 bg-[#FFC700] rounded-full text-black text-base md:text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-md"
             >
               Ask a Question
             </button>
@@ -736,7 +738,7 @@ export default function Index() {
 
       {/* Footer */}
       <footer className="bg-[#1D1D1D] pt-16 pb-10 lg:pt-[80px]">
-        <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           {/* Top Section */}
           <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-16">
             {/* Left: Logo & Nav Links */}

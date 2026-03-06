@@ -1,11 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch, getErrorMessage } from "@/lib/api";
+import { setPendingOtpContext } from "@/lib/auth";
 
 export default function CreateAccount() {
   const [isLoginView, setIsLoginView] = useState(false); // Added state to toggle Login/Register
   const [phoneNumber, setPhoneNumber] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   // Validation: Only allow numbers and max 10 digits
@@ -17,7 +20,7 @@ export default function CreateAccount() {
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (phoneNumber.length !== 10) {
       setError("Please enter a valid 10-digit mobile number.");
       return;
@@ -27,7 +30,32 @@ export default function CreateAccount() {
       return;
     }
 
-    navigate("/verification");
+    try {
+      setIsSubmitting(true);
+      setError("");
+
+      await apiFetch<{ success: boolean; message: string }>("/send-otp", {
+        method: "POST",
+        auth: false,
+        body: {
+          country_code: "+91",
+          phone_number: phoneNumber,
+          type: isLoginView ? 2 : 1,
+        },
+      });
+
+      setPendingOtpContext({
+        country_code: "+91",
+        phone_number: phoneNumber,
+        flowType: isLoginView ? "login" : "register",
+      });
+
+      navigate("/verification");
+    } catch (e) {
+      setError(getErrorMessage(e));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const toggleView = () => {
@@ -120,13 +148,14 @@ export default function CreateAccount() {
               <button
                 onClick={handleContinue}
                 disabled={
-                  isLoginView
+                  isSubmitting ||
+                  (isLoginView
                     ? phoneNumber.length < 10
-                    : !agreed || phoneNumber.length < 10
+                    : !agreed || phoneNumber.length < 10)
                 }
                 className="w-full h-[52px] bg-[#FFC700] hover:bg-[#E6B400] disabled:bg-[#FFC700]/50 disabled:cursor-not-allowed rounded-full text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-md"
               >
-                Continue
+                {isSubmitting ? "Sending OTP..." : "Continue"}
               </button>
 
               {/* Dynamic Footer Links */}
