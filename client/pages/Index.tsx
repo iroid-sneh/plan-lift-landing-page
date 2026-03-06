@@ -4,7 +4,7 @@ import FaqSection from "./faqSection";
 
 export default function Index() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
-  const [openItems, setOpenItems] = useState<number[]>([0, 3]); // For FAQ section
+  const [openItems, setOpenItems] = useState<number[]>([0]); // For FAQ section
   const navigate = useNavigate();
   const toggleFaq = (index: number) => {
     setOpenItems((prev) =>
@@ -115,7 +115,7 @@ export default function Index() {
         <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px] py-6">
           <div className="flex items-center justify-between">
             {/* Logo - Fixed Path */}
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-4">
               <img
                 src="/logo.png"
                 alt="Planlift Logo"
@@ -327,10 +327,10 @@ export default function Index() {
       <section id="about" className="bg-[#FDFCF6] py-16 lg:py-24">
         <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
-            {/* 1. Section Header (Centered) */}
-            <div className="text-center mb-16">
-              <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
-                <span className="text-[#1D2939] text-sm font-medium">
+            {/* 1. Section Header (Reduced bottom margin to close the gap) */}
+            <div className="text-center mb-4 md:mb-6">
+              <div className="inline-flex px-4 py-2 rounded-full border border-[#2828271A] mb-4 bg-transparent">
+                <span className="text-[#28282799] text-sm font-medium">
                   About Us
                 </span>
               </div>
@@ -339,8 +339,8 @@ export default function Index() {
               </h2>
             </div>
 
-            {/* 2. Content Row (Two Columns) */}
-            <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20 w-full mb-16">
+            {/* 2. Content Row (Reduced gap from title section) */}
+            <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-20 w-full mb-16">
               {/* Left Column: Illustration */}
               <div className="w-full lg:w-1/2">
                 <img
@@ -385,13 +385,13 @@ export default function Index() {
       </section>
 
       {/* How It Works - 3 Easy Steps */}
-      <section id="how-it-work" className="bg-[#FDFCF6] py-20 lg:py-28">
+      <section id="how-it-work" className="bg-[#FDFCF6] py-20 lg:py-12">
         <div className="max-w-[1800px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
             {/* 1. Section Header */}
             <div className="text-center max-w-[800px] mb-16">
-              <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
-                <span className="text-[#667085] text-sm font-medium">
+              <div className="inline-flex px-4 py-2 rounded-full border border-[#2828271A] mb-2 bg-transparent">
+                <span className="text-[#28282799] text-sm font-medium">
                   How It Work
                 </span>
               </div>
@@ -410,7 +410,7 @@ export default function Index() {
               {/* Step Numbers with Dashed Line */}
               <div className="relative flex justify-between items-center max-w-[900px] mx-auto mb-10">
                 {/* Dashed Connecting Line */}
-                <div className="absolute top-1/2 left-0 w-full h-[1px] border-t border-dashed border-gray-300 -z-0"></div>
+                <div className="absolute top-1/2 inset-x-16 h-px -z-0 bg-[repeating-linear-gradient(to_right,rgba(209,213,219,1)_0,rgba(209,213,219,1)_8px,transparent_8px,transparent_16px)]"></div>
 
                 {/* Number 1 (Active) */}
                 <div className="relative z-10 w-14 h-14 rounded-full bg-[#FFC700] flex items-center justify-center text-black text-xl font-bold border-4 border-[#FDFCF6]">
@@ -459,7 +459,7 @@ export default function Index() {
               {/* Step Image Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Card 1 */}
-                <div className="rounded-[32px] p-8 flex items-center justify-center min-h-[350px]">
+                <div className="rounded-[32px] border border-gray-200 p-8 flex items-center justify-center min-h-[350px]">
                   <img
                     src="/step1Img.png"
                     alt="Step 1"
@@ -467,7 +467,7 @@ export default function Index() {
                   />
                 </div>
                 {/* Card 2 */}
-                <div className="rounded-[32px] p-8 flex items-center justify-center min-h-[150px]">
+                <div className="rounded-[32px] border border-gray-200 p-8 flex items-center justify-center min-h-[150px]">
                   <img
                     src="/Step2Img.png"
                     alt="Step 2"
@@ -475,7 +475,7 @@ export default function Index() {
                   />
                 </div>
                 {/* Card 3 */}
-                <div className="rounded-[32px] p-8 flex items-center justify-center min-h-[350px]">
+                <div className="rounded-[32px] border border-gray-200 p-8 flex items-center justify-center min-h-[350px]">
                   <img
                     src="/Step3Img.png"
                     alt="Step 3"
@@ -494,8 +494,8 @@ export default function Index() {
           {/* Top Content: Header & Rocket */}
           <div className="flex flex-col lg:flex-row items-start justify-between gap-12 mb-16">
             <div className="max-w-[600px]">
-              <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
-                <span className="text-[#667085] text-sm font-medium">
+              <div className="inline-flex px-4 py-2 rounded-full border border-[#2828271A] mb-6 bg-transparent">
+                <span className="text-[#28282799] text-sm font-medium">
                   Pricing
                 </span>
               </div>
@@ -666,8 +666,8 @@ export default function Index() {
           {/* Header Row: Title + Illustration */}
           <div className="flex flex-col lg:flex-row items-start justify-between gap-10 mb-16">
             <div className="max-w-[900px]">
-              <div className="inline-flex px-4 py-2 rounded-full border border-gray-200 mb-6 bg-white">
-                <span className="text-[#667085] text-sm font-medium">FAQ</span>
+              <div className="inline-flex px-4 py-2 rounded-full border border-[#2828271A] mb-6 bg-transparent">
+                <span className="text-[#28282799] text-sm font-medium">FAQ</span>
               </div>
               <h2 className="text-[40px] md:text-[64px] font-bold text-[#282827] leading-[1.1] mb-6 font-satoshi">
                 Frequently asked questions
@@ -708,7 +708,7 @@ export default function Index() {
             {/* Right Column (Items 4, 5, 6) */}
             <div className="flex-1 flex flex-col gap-6 w-full">
               {faqData.slice(3, 6).map((item, index) => {
-                const actualIndex = index + 2; // 3, 4, 5
+                const actualIndex = index + 3; // 3, 4, 5
                 const isOpen = openItems.includes(actualIndex);
                 return (
                   <FaqItem
@@ -724,8 +724,11 @@ export default function Index() {
 
           {/* Center CTA Button */}
           <div className="flex justify-center">
-            <button className="px-12 py-5 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-md">
-              Ask a Questions
+            <button
+              onClick={() => navigate("/contact-us")}
+              className="px-12 py-5 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-md"
+            >
+              Ask a Question
             </button>
           </div>
         </div>
