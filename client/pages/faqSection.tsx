@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Index() {
+    const navigate = useNavigate();
     // Allow multiple items to be open for the "same to same" look
     const [openItems, setOpenItems] = useState([0, 3]); // Defaulting 1st and 5th open as per design
 
@@ -115,8 +117,11 @@ export default function Index() {
 
                     {/* Center CTA Button */}
                     <div className="flex justify-center">
-                        <button className="px-12 py-5 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-md">
-                            Ask a Questions
+                        <button
+                            onClick={() => navigate('/contact-us')}
+                            className="px-12 py-5 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-all transform hover:scale-105 shadow-md"
+                        >
+                            Ask a Question
                         </button>
                     </div>
 

@@ -1,16 +1,92 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getUser, clearAuth } from "@/lib/auth";
+import { apiFetch, getErrorMessage } from "@/lib/api";
 import FaqSection from "./faqSection";
 
 export default function Index() {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
   const [openItems, setOpenItems] = useState<number[]>([0]); // For FAQ section
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const user = getUser();
+
+  // Subscription states
+  const [subscriberEmail, setSubscriberEmail] = useState("");
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const [subscribeStatus, setSubscribeStatus] = useState<"idle" | "success" | "error">("idle");
+  const [subscribeMessage, setSubscribeMessage] = useState("");
+
+  const handleSubscribe = async () => {
+    if (!subscriberEmail || isSubscribing) return;
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(subscriberEmail)) {
+      setSubscribeStatus("error");
+      setSubscribeMessage("Please enter a valid email address.");
+      return;
+    }
+
+    setSubscribeStatus("idle");
+    setIsSubscribing(true);
+
+    try {
+      await apiFetch("/subscribe", {
+        method: "POST",
+        auth: false,
+        body: { email: subscriberEmail },
+      });
+
+      setSubscribeStatus("success");
+      setSubscriberEmail("");
+
+      // Reset after 5 seconds
+      setTimeout(() => {
+        setSubscribeStatus("idle");
+        setSubscribeMessage("");
+      }, 5000);
+    } catch (err) {
+      setSubscribeStatus("error");
+      setSubscribeMessage(getErrorMessage(err));
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
+
   const toggleFaq = (index: number) => {
     setOpenItems((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
   };
+
+  const handleLogout = async () => {
+    try {
+      await apiFetch("/logout", {
+        method: "POST",
+        // body: { device_id: "" },
+      });
+    } catch (e) {
+      console.error("Logout failed:", e);
+    } finally {
+      clearAuth();
+      setShowUserMenu(false);
+      navigate("/", { replace: true });
+      window.location.reload();
+    }
+  };
+
+  // Close menu on click outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // FAQ data
   const faqData = [
@@ -165,58 +241,113 @@ export default function Index() {
               >
                 Contact us
               </button>
-              <button
-                onClick={() => navigate("/create-account")}
-                className="px-8 py-3 border border-[#1D2939] rounded-full text-[#1D2939] text-lg font-bold hover:bg-gray-50 transition-colors"
-              >
-                Register/Login
-              </button>
+
+              {user ? (
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="w-12 h-12 rounded-full border border-gray-200 overflow-hidden hover:border-[#FFC700] transition-all"
+                  >
+                    {user.profile ? (
+                      <img src={user.profile} alt={user.full_name} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full bg-[#F2F4F7] flex items-center justify-center text-[#1D2939] font-bold">
+                        {user.full_name.charAt(0)}
+                      </div>
+                    )}
+                  </button>
+
+                  {showUserMenu && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50">
+                      <div className="px-4 py-3 border-b border-gray-50">
+                        <p className="text-sm font-bold text-[#1D2939] truncate">{user.full_name}</p>
+                        <p className="text-xs text-[#667085] truncate">{user.email}</p>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={() => navigate("/create-account")}
+                  className="px-8 py-3 border border-[#1D2939] rounded-full text-[#1D2939] text-lg font-bold hover:bg-gray-50 transition-colors"
+                >
+                  Register/Login
+                </button>
+              )}
             </div>
           </div>
         </div>
       </header>
 
       {/* 2. EMAIL / NEWSLETTER ROW */}
-      <div className="bg-[#282827] py-4">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="text-white text-[20px] font-normal font-satoshi">
-              We Would Love To Hear From You.
-            </p>
-            <div className="flex items-center gap-3 w-full md:w-auto">
-              <div className="relative flex-1 md:w-[400px]">
-                <span className="absolute left-5 top-1/2 -translate-y-1/2">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="1.5"
-                  >
-                    <path
-                      d="M3 8L10.89 13.26C11.56 13.71 12.44 13.71 13.11 13.26L21 8M5 19H19C20.1 19 21 18.1 21 17V7C21 5.9 20.1 5 19 5H5C3.9 5 3 5.9 3 7V17C3 18.1 3.9 19 5 19Z"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="w-full pl-14 pr-6 py-4 rounded-full border border-white/20 bg-transparent text-white placeholder:text-white/60 focus:outline-none focus:border-white/50"
-                />
-              </div>
-              <button className="px-10 py-4 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-colors">
-                Notify me
-              </button>
+      <div className="bg-[#282827] py-4 min-h-[88px] flex items-center">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px] w-full">
+          {subscribeStatus === "success" ? (
+            <div className="flex justify-center items-center py-2">
+              <p className="text-[#FFC700] text-xl font-bold animate-pulse text-center">
+                Successfully Subscribed! We will notify you soon.
+              </p>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <p className="text-white text-[20px] font-normal font-satoshi">
+                We Would Love To Hear From You.
+              </p>
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                <div className="flex flex-col flex-1 md:w-[400px]">
+                  <div className="relative">
+                    <span className="absolute left-5 top-1/2 -translate-y-1/2">
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="1.5"
+                      >
+                        <path
+                          d="M3 8L10.89 13.26C11.56 13.71 12.44 13.71 13.11 13.26L21 8M5 19H19C20.1 19 21 18.1 21 17V7C21 5.9 20.1 5 19 5H5C3.9 5 3 5.9 3 7V17C3 18.1 3.9 19 5 19Z"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                    <input
+                      type="email"
+                      placeholder="Email address"
+                      value={subscriberEmail}
+                      onChange={(e) => setSubscriberEmail(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
+                      className={`w-full pl-14 pr-6 py-4 rounded-full border ${subscribeStatus === "error" ? "border-red-500" : "border-white/20"} bg-transparent text-white placeholder:text-white/60 text-lg focus:outline-none focus:border-white/50`}
+                    />
+                  </div>
+                  {subscribeStatus === "error" && (
+                    <p className="text-red-500 text-xs mt-1 ml-5">
+                      {subscribeMessage}
+                    </p>
+                  )}
+                </div>
+                <button
+                  onClick={handleSubscribe}
+                  disabled={isSubscribing}
+                  className="px-2 py-4 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed min-w-[140px]"
+                >
+                  {isSubscribing ? "..." : "Notify me"}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
       {/* 3. HERO SECTION */}
-      <section id="home" className="relative overflow-hidden pt-20 pb-0">
+      <section id="home" className="relative overflow-hidden pt-20 pb-32">
         {/* Background Dashed Circles - Centered behind text */}
         <div className="absolute -top-[500px] left-1/2 -translate-x-1/2 w-full flex justify-center pointer-events-none">
           <div className="relative w-[1400px] h-[1400px]">
@@ -247,7 +378,7 @@ export default function Index() {
             {/* People Net - Inner Bottom Right */}
             <img
               src="/3rdillustration.png"
-              className="absolute top-[68%] right-[8%] w-24 h-24 object-contain"
+              className="absolute top-[65%] right-[8%] w-24 h-24 object-contain"
               alt=""
             />
           </div>

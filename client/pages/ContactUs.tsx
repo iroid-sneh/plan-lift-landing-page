@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { apiFetch, getErrorMessage } from "@/lib/api";
+import Navbar from "@/components/Navbar";
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -7,6 +10,14 @@ export default function ContactUs() {
     subject: "General Question",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -16,60 +27,61 @@ export default function ContactUs() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Contact Form Submitted:", formData);
-    // Add your API submission logic here
+    if (isSubmitting) return;
+
+    setError(null);
+    setSuccessMessage(null);
+    setIsSubmitting(true);
+
+    try {
+      const res = await apiFetch<{
+        success: boolean;
+        message: string;
+        data: {
+          id: string;
+          full_name: string;
+          email: string;
+          subject: string;
+          message: string;
+          created_at: string;
+        };
+      }>("/contact", {
+        method: "POST",
+        auth: false,
+        body: {
+          full_name: formData.fullName,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        },
+      });
+
+      setSuccessMessage(
+        res.message || "Contact request submitted successfully.",
+      );
+
+      setFormData({
+        fullName: "",
+        email: "",
+        subject: "General Question",
+        message: "",
+      });
+
+      window.setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#FFFDF7] font-satoshi flex flex-col">
-      {/* Navigation Bar */}
-      <nav className="w-full flex items-center justify-between px-6 md:px-12 lg:px-20 py-5 border-b border-gray-100 bg-[#FFFDF7]">
-        {/* Logo */}
-        <div className="flex-shrink-0">
-          <img
-            src="/contactUsLogo.png" // Replace with the yellow bird logo from Figma
-            alt="Planlift Logo"
-            className="h-10 w-auto object-contain"
-          />
-        </div>
-
-        {/* Center Links */}
-        <div className="hidden lg:flex items-center gap-10 text-[16px] text-[#667085] font-medium">
-          <a href="/" className="hover:text-[#1D2939] transition-colors">
-            Home
-          </a>
-          <a href="/#about" className="hover:text-[#1D2939] transition-colors">
-            About
-          </a>
-          <a
-            href="/#how-it-work"
-            className="hover:text-[#1D2939] transition-colors"
-          >
-            How It Work
-          </a>
-          <a
-            href="/#pricing"
-            className="hover:text-[#1D2939] transition-colors"
-          >
-            Pricing
-          </a>
-          <a href="/#faq" className="hover:text-[#1D2939] transition-colors">
-            FAQ
-          </a>
-        </div>
-
-        {/* Right Buttons */}
-        <div className="hidden md:flex items-center gap-4">
-          <button className="px-6 py-2.5 h-[48px] rounded-full border border-[#FFC700] text-[#1D2939] font-bold text-[15px] hover:bg-[#FFC700]/10 transition-colors">
-            Contact us
-          </button>
-          <button className="px-6 py-2.5 h-[48px] rounded-full border border-[#1D2939] text-[#1D2939] font-bold text-[15px] hover:bg-[#1D2939] hover:text-white transition-all">
-            Register/Login
-          </button>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Main Content Area */}
       <main className="flex-grow flex flex-col items-center pt-16 pb-24 px-4 relative z-10">
@@ -177,12 +189,25 @@ export default function ContactUs() {
               ></textarea>
             </div>
 
+            {error && (
+              <p className="text-sm text-red-600 mt-2" role="alert">
+                {error}
+              </p>
+            )}
+
+            {successMessage && !error && (
+              <p className="text-sm text-green-600 mt-2" role="status">
+                {successMessage} Redirecting to home...
+              </p>
+            )}
+
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full h-[52px] mt-4 bg-[#FFC700] hover:bg-[#E6B400] rounded-full text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-sm"
+              disabled={isSubmitting}
+              className="w-full h-[52px] mt-4 bg-[#FFC700] hover:bg-[#E6B400] disabled:bg-[#FFE380] disabled:cursor-not-allowed rounded-full text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-sm"
             >
-              Send Message
+              {isSubmitting ? "Sending..." : "Send Message"}
             </button>
           </form>
         </div>

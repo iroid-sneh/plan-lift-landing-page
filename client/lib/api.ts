@@ -64,8 +64,11 @@ export async function apiFetch<T>(
   const base = (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? "";
   const url = `${base}${path}`;
 
+  const isFormData = opts.body instanceof FormData;
   const headers: Record<string, string> = {
-    ...(opts.body !== undefined ? { "Content-Type": "application/json" } : {}),
+    ...(opts.body !== undefined && !isFormData
+      ? { "Content-Type": "application/json" }
+      : {}),
     ...(opts.headers ?? {}),
   };
 
@@ -78,13 +81,25 @@ export async function apiFetch<T>(
   const res = await fetch(url, {
     method: opts.method ?? "GET",
     headers,
-    body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+    body:
+      opts.body !== undefined
+        ? isFormData
+          ? (opts.body as FormData)
+          : JSON.stringify(opts.body)
+        : undefined,
     signal: opts.signal,
   });
 
   const payload = await res.json().catch(() => null);
 
   if (!res.ok) {
+    if (res.status === 401) {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("planlark.auth"); // Fallback exact key or clearAuth logic
+        window.location.href = "/create-account";
+      }
+    }
+
     const msg =
       bestMessageFromPayload(payload) ??
       `Request failed (${res.status}). Please try again.`;

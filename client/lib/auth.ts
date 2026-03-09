@@ -5,8 +5,24 @@ export type AuthToken = {
   expiresIn?: number;
 };
 
+export type VerifiedUser = {
+  country_code: string;
+  phone_number: string;
+};
+
+export type UserProfile = {
+  id: number;
+  full_name: string;
+  email: string;
+  country_code: string;
+  phone_number: string;
+  profile?: string;
+  // and other fields returned by api...
+};
+
 type StoredAuth = {
   token?: AuthToken;
+  user?: UserProfile;
 };
 
 export type PendingOtpContext = {
@@ -17,6 +33,7 @@ export type PendingOtpContext = {
 
 const AUTH_STORAGE_KEY = "planlark.auth";
 const PENDING_OTP_KEY = "planlark.pendingOtp";
+const VERIFIED_USER_KEY = "planlark.verifiedUser";
 
 export function getStoredAuth(): StoredAuth | null {
   try {
@@ -29,11 +46,22 @@ export function getStoredAuth(): StoredAuth | null {
 }
 
 export function setAuthToken(token: AuthToken) {
-  const next: StoredAuth = { token };
+  const existing = getStoredAuth() || {};
+  const next: StoredAuth = { ...existing, token };
   localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(next));
 }
 
-export function clearAuthToken() {
+export function setUser(user: UserProfile) {
+  const existing = getStoredAuth() || {};
+  const next: StoredAuth = { ...existing, user };
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(next));
+}
+
+export function getUser(): UserProfile | null {
+  return getStoredAuth()?.user ?? null;
+}
+
+export function clearAuth() {
   localStorage.removeItem(AUTH_STORAGE_KEY);
 }
 
@@ -57,5 +85,23 @@ export function getPendingOtpContext(): PendingOtpContext | null {
 
 export function clearPendingOtpContext() {
   sessionStorage.removeItem(PENDING_OTP_KEY);
+}
+
+export function setVerifiedUser(user: VerifiedUser) {
+  sessionStorage.setItem(VERIFIED_USER_KEY, JSON.stringify(user));
+}
+
+export function getVerifiedUser(): VerifiedUser | null {
+  try {
+    const raw = sessionStorage.getItem(VERIFIED_USER_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as VerifiedUser;
+  } catch {
+    return null;
+  }
+}
+
+export function clearVerifiedUser() {
+  sessionStorage.removeItem(VERIFIED_USER_KEY);
 }
 
