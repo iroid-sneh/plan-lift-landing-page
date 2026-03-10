@@ -91,9 +91,9 @@ export default function Index() {
   // FAQ data
   const faqData = [
     {
-      question: "What Is Planlift?",
+      question: "What Is Planlark?",
       answer:
-        "PlanLift helps you make clear, decisive plans with friends. Instead of long back-and-forth conversations, you create one plan, set a response deadline, and get clear yes-or-no responses.",
+        "Planlark helps you make clear, decisive plans with friends. Instead of long back-and-forth conversations, you create one plan, set a response deadline, and get clear yes-or-no responses.",
     },
     {
       question: "How does it work?",
@@ -106,14 +106,14 @@ export default function Index() {
         "Each plan includes a response window and expiration time. Friends must respond before the deadline. If they don’t, the plan expires and everyone moves on. This prevents plans from dragging on without a decision",
     },
     {
-      question: "What can I use PlanLift for?",
+      question: "What can I use Planlark for?",
       answer:
-        "You can use PlanLift for anything you normally coordinate with friends — dinners, workouts, trips, hangouts, events, or casual meetups. It’s especially useful when plans tend to stall, change too often, or never get finalized.",
+        "You can use Planlark for anything you normally coordinate with friends — dinners, workouts, trips, hangouts, events, or casual meetups. It’s especially useful when plans tend to stall, change too often, or never get finalized.",
     },
     {
-      question: "Do my friends need PlanLift?",
+      question: "Do my friends need Planlark?",
       answer:
-        "Yes. When you send a plan, your friends will be prompted to download PlanLift so they can respond. This keeps everything in one place and makes future plans easier to coordinate.",
+        "Yes. When you send a plan, your friends will be prompted to download Planlark so they can respond. This keeps everything in one place and makes future plans easier to coordinate.",
     },
     {
       question: "Is it free?",
@@ -194,7 +194,7 @@ export default function Index() {
             <Link to="/" className="flex items-center gap-4">
               <img
                 src="/logo.png"
-                alt="Planlift Logo"
+                alt="Planlark Logo"
                 className="h-16 w-16 object-contain"
               />
               <span className="text-[22px] font-bold text-[#1D2939] font-satoshi">
@@ -485,7 +485,7 @@ export default function Index() {
               <div className="w-full lg:w-1/2 flex flex-col gap-8">
                 <div className="space-y-6">
                   <p className="text-[#475467] text-base md:text-lg leading-relaxed">
-                    PlanLift was created to solve a simple but frustrating
+                    Planlark was created to solve a simple but frustrating
                     problem: <br /> making plans with friends often goes
                     nowhere.
                   </p>
@@ -499,7 +499,7 @@ export default function Index() {
                   <div className="border-t border-gray-200" />
 
                   <p className="text-[#475467] text-base md:text-lg leading-relaxed">
-                    PlanLift flips this by removing endless options. Instead, it
+                    Planlark flips this by removing endless options. Instead, it
                     promotes <br /> clear commitments with a single plan and a
                     deadline to respond.
                   </p>
@@ -634,7 +634,7 @@ export default function Index() {
                 Flexible Pricing for <br /> Every Need
               </h2>
               <p className="text-[#667085] text-base md:text-lg max-w-[550px]">
-                Planlift Makes Trip Planning Easy, Fast, And Enjoyable <br />{" "}
+                Planlark Makes Trip Planning Easy, Fast, And Enjoyable <br />{" "}
                 For Everyone.
               </p>
             </div>
@@ -806,7 +806,7 @@ export default function Index() {
                 Frequently asked questions
               </h2>
               <p className="text-[#667085] text-base md:text-lg max-w-[550px]">
-                Clear Answers To Help You Use Planlift With Confidence And Enjoy
+                Clear Answers To Help You Use Planlark With Confidence And Enjoy
                 Smooth, Stress-Free Tour Planning With Your Friends.
               </p>
             </div>
@@ -878,11 +878,11 @@ export default function Index() {
               <Link to="/" className="flex items-center gap-3">
                 <img
                   src="/FooterLogo.png"
-                  alt="Planlift Logo"
+                  alt="Planlark Logo"
                   className="h-10 w-10 object-contain"
                 />
                 <span className="text-[24px] font-bold text-white font-satoshi">
-                  Planlift
+                  Planlark
                 </span>
               </Link>
 
