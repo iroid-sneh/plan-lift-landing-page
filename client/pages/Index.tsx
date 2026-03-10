@@ -77,6 +77,18 @@ export default function Index() {
     }
   };
 
+  const baseRevCatUrl = import.meta.env.REVNUECAT_BASE_URL;
+
+  const handlePremiumPlanClick = () => {
+    if (!user) {
+      navigate("/create-account");
+      return;
+    }
+
+    const url = `${baseRevCatUrl}/${user.id}`;
+    window.open(url, "_blank");
+  };
+
   // Close menu on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -735,7 +747,7 @@ export default function Index() {
                     </svg>
                   </div>
                   <div className="text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
-                    $3.99
+                    $19.99
                   </div>
                   <p className="text-[#667085] text-sm md:text-base">
                     Per Brand, Per Year
@@ -783,7 +795,10 @@ export default function Index() {
                 </div>
               </div>
 
-              <button className="w-full mt-8 py-3 bg-[#FFC700] rounded-full text-black text-base md:text-lg font-bold hover:bg-[#E6B400] transition-colors flex items-center justify-center gap-2">
+              <button
+                onClick={handlePremiumPlanClick}
+                className="w-full mt-8 py-3 bg-[#FFC700] rounded-full text-black text-base md:text-lg font-bold hover:bg-[#E6B400] transition-colors flex items-center justify-center gap-2"
+              >
                 Select Plan
               </button>
             </div>
