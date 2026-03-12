@@ -12,6 +12,7 @@ import CreateAccount from "./pages/CreateAccount";
 import Verification from "./pages/Verification";
 import CompleteProfile from "./pages/CompleteProfile";
 import ContactUs from "./pages/ContactUs";
+import PaymentSuccess from "./pages/PaymentSuccess";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/verification" element={<Verification />} />
           <Route path="/complete-profile" element={<CompleteProfile />} />
           <Route path="/contact-us" element={<ContactUs />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

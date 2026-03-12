@@ -101,7 +101,7 @@ export default function Index() {
     }
   };
 
-  const baseRevCatUrl = import.meta.env.REVNUECAT_BASE_URL;
+  const baseRevCatUrl = import.meta.env.VITE_REVNUECAT_BASE_URL;
 
   const handlePremiumPlanClick = () => {
     if (!user) {
@@ -110,7 +110,7 @@ export default function Index() {
     }
 
     const url = `${baseRevCatUrl}/${user.id}`;
-    window.open(url, "_blank");
+    window.location.href = url;
   };
 
   // Close menu on click outside
