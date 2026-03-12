@@ -12,6 +12,10 @@ export default function Index() {
   const navigate = useNavigate();
   const user = getUser();
 
+  // Reference for the email input to allow scrolling and focusing
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const [isHighlighted, setIsHighlighted] = useState(false);
+
   // Subscription states
   const [subscriberEmail, setSubscriberEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
@@ -52,6 +56,26 @@ export default function Index() {
       setSubscribeMessage(getErrorMessage(err));
     } finally {
       setIsSubscribing(false);
+    }
+  };
+
+  // Function to scroll to the Notify Me section and focus the input
+  const scrollToNotify = () => {
+    if (emailInputRef.current) {
+      emailInputRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      
+      // Trigger highlight animation
+      setIsHighlighted(true);
+      
+      // Focus after scroll starts
+      setTimeout(() => {
+        emailInputRef.current?.focus();
+      }, 600);
+
+      // Remove highlight state after animation finishes
+      setTimeout(() => {
+        setIsHighlighted(false);
+      }, 2500);
     }
   };
 
@@ -198,6 +222,18 @@ export default function Index() {
   }
   return (
     <div className="min-h-screen bg-planlift-cream">
+      {/* Animation Styles for the highlight effect */}
+      <style>{`
+        @keyframes highlight-pulse {
+          0% { box-shadow: 0 0 0 0px rgba(255, 199, 0, 0.7); border-color: #FFC700; }
+          50% { box-shadow: 0 0 0 15px rgba(255, 199, 0, 0); border-color: #FFC700; }
+          100% { box-shadow: 0 0 0 0px rgba(255, 199, 0, 0); }
+        }
+        .animate-highlight {
+          animation: highlight-pulse 3s ease-out;
+        }
+      `}</style>
+
       {/* 1. NAVBAR */}
       <header className="bg-[#FDFCF6]">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px] py-6">
@@ -331,12 +367,13 @@ export default function Index() {
                       </svg>
                     </span>
                     <input
+                      ref={emailInputRef}
                       type="email"
                       placeholder="Email address"
                       value={subscriberEmail}
                       onChange={(e) => setSubscriberEmail(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                      className={`w-full pl-14 pr-6 py-4 rounded-full border ${subscribeStatus === "error" ? "border-red-500" : "border-white/20"} bg-transparent text-white placeholder:text-white/60 text-lg focus:outline-none focus:border-white/50`}
+                      className={`w-full pl-14 pr-6 py-4 rounded-full border transition-all duration-500 ${isHighlighted ? "animate-highlight" : ""} ${subscribeStatus === "error" ? "border-red-500" : "border-white/20"} bg-transparent text-white placeholder:text-white/60 text-lg focus:outline-none focus:border-white/50`}
                     />
                   </div>
                   {subscribeStatus === "error" && (
@@ -429,7 +466,10 @@ export default function Index() {
           </p>
 
           {/* Download Button with Shadow to match Figma */}
-          <button className="group relative px-10 py-5 bg-[#FFC700] rounded-full overflow-hidden text-lg font-bold text-[#1D2939] shadow-[0_10px_30px_-10px_rgba(255,199,0,0.5)] transition-all active:scale-95">
+          <button 
+            onClick={scrollToNotify}
+            className="group relative px-10 py-5 bg-[#FFC700] rounded-full overflow-hidden text-lg font-bold text-[#1D2939] shadow-[0_10px_30px_-10px_rgba(255,199,0,0.5)] transition-all active:scale-95"
+          >
             {/* The Animated Text Wrapper */}
             <div className="relative flex items-center justify-center overflow-hidden">
               {"Get Early Access".split("").map((char, index) => (
