@@ -20,9 +20,20 @@ export type UserProfile = {
   // and other fields returned by api...
 };
 
+export type Subscription = {
+  tier: "free" | "premium";
+  isActive: boolean;
+  expiryDate: string | null;
+  maxPlans: number;
+  createdPlans: number;
+  remainingFreePlans: number;
+  canCreateMorePlans: boolean;
+};
+
 type StoredAuth = {
   token?: AuthToken;
   user?: UserProfile;
+  subscription?: Subscription;
 };
 
 export type PendingOtpContext = {
@@ -59,6 +70,16 @@ export function setUser(user: UserProfile) {
 
 export function getUser(): UserProfile | null {
   return getStoredAuth()?.user ?? null;
+}
+
+export function setSubscription(subscription: Subscription) {
+  const existing = getStoredAuth() || {};
+  const next: StoredAuth = { ...existing, subscription };
+  localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(next));
+}
+
+export function getSubscription(): Subscription | null {
+  return getStoredAuth()?.subscription ?? null;
 }
 
 export function clearAuth() {

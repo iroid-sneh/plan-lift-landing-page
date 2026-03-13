@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getUser, clearAuth } from "@/lib/auth";
+import { getUser, getSubscription, setSubscription, setUser, clearAuth, Subscription, UserProfile } from "@/lib/auth";
 import { apiFetch, getErrorMessage } from "@/lib/api";
 import FaqSection from "./faqSection";
 
@@ -11,10 +11,43 @@ export default function Index() {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const user = getUser();
+  const [subscription, setLocalSubscription] = useState(getSubscription());
+
+  // Fetch fresh subscription data from API on mount for logged-in users
+  useEffect(() => {
+    if (!user) return;
+    const fetchProfile = async () => {
+      try {
+        const res = await apiFetch<{
+          success: boolean;
+          data: { user: UserProfile; subscription: Subscription };
+        }>("/user/profile");
+        if (res.data?.subscription) {
+          setSubscription(res.data.subscription);
+          setLocalSubscription(res.data.subscription);
+        }
+        if (res.data?.user) {
+          setUser(res.data.user);
+        }
+      } catch {
+        // Use cached data on failure
+      }
+    };
+    fetchProfile();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Determine active plan
+  const isPremiumActive = subscription?.tier === "premium" && subscription?.isActive &&
+    (!subscription?.expiryDate || new Date(subscription.expiryDate) > new Date());
+  const isFreePlan = !subscription || subscription.tier === "free";
 
   // Reference for the email input to allow scrolling and focusing
   const emailInputRef = useRef<HTMLInputElement>(null);
   const [isHighlighted, setIsHighlighted] = useState(false);
+
+  // How It Works - scroll-driven step animation
+  const [activeStep, setActiveStep] = useState(0);
+  const howItWorksSectionRef = useRef<HTMLDivElement>(null);
 
   // Subscription states
   const [subscriberEmail, setSubscriberEmail] = useState("");
@@ -122,6 +155,29 @@ export default function Index() {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Scroll-driven step progression for How It Works
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!howItWorksSectionRef.current) return;
+      const wrapper = howItWorksSectionRef.current;
+      const rect = wrapper.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const scrollableDistance = wrapper.offsetHeight - viewportHeight;
+
+      if (scrollableDistance <= 0) return;
+
+      const scrolled = -rect.top;
+      const progress = Math.max(0, Math.min(1, scrolled / scrollableDistance));
+
+      if (progress < 0.33) setActiveStep(0);
+      else if (progress < 0.66) setActiveStep(1);
+      else setActiveStep(2);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // FAQ data
@@ -567,8 +623,9 @@ export default function Index() {
         </div>
       </section>
 
-      {/* How It Works - 3 Easy Steps */}
-      <section id="how-it-work" className="bg-[#FDFCF6] py-16 lg:py-20">
+      {/* How It Works - 3 Easy Steps (Scroll-driven) */}
+      <div ref={howItWorksSectionRef} className="relative" style={{ height: "250vh" }}>
+      <section id="how-it-work" className="bg-[#FDFCF6] py-16 lg:py-20 sticky top-0">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
             {/* 1. Section Header */}
@@ -594,82 +651,68 @@ export default function Index() {
               <div className="relative flex justify-between items-center max-w-[900px] mx-auto mb-8">
                 {/* Dashed Connecting Line */}
                 <div className="absolute top-1/2 inset-x-16 h-px -z-0 bg-[repeating-linear-gradient(to_right,rgba(209,213,219,1)_0,rgba(209,213,219,1)_8px,transparent_8px,transparent_16px)]"></div>
+                {/* Yellow progress overlay */}
+                <div
+                  className="absolute top-1/2 left-16 h-[2px] -z-0 bg-[#FFC700] transition-all duration-500 rounded-full"
+                  style={{ width: `${activeStep * 50}%`, maxWidth: "calc(100% - 128px)" }}
+                />
 
-                {/* Number 1 (Active) */}
-                <div className="relative z-10 w-12 h-12 rounded-full bg-[#FFC700] flex items-center justify-center text-black text-lg font-bold border-4 border-[#FDFCF6]">
-                  1
-                </div>
-                {/* Number 2 */}
-                <div className="relative z-10 w-12 h-12 rounded-full bg-[#F2F4F7] flex items-center justify-center text-[#667085] text-lg font-bold border-4 border-[#FDFCF6]">
-                  2
-                </div>
-                {/* Number 3 */}
-                <div className="relative z-10 w-12 h-12 rounded-full bg-[#F2F4F7] flex items-center justify-center text-[#667085] text-lg font-bold border-4 border-[#FDFCF6]">
-                  3
-                </div>
+                {[0, 1, 2].map((step) => (
+                  <div
+                    key={step}
+                    className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border-4 border-[#FDFCF6] transition-all duration-500 ${
+                      activeStep === step
+                        ? "bg-[#FFC700] text-black scale-110"
+                        : "bg-[#F2F4F7] text-[#667085]"
+                    }`}
+                  >
+                    {step + 1}
+                  </div>
+                ))}
               </div>
 
               {/* Steps Grid (Titles & Descriptions) */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-10">
-                <div>
-                  <h3 className="text-[20px] md:text-[22px] font-medium text-[#1D2939] mb-2">
-                    Creating A Clear Plan
-                  </h3>
-                  <p className="text-[#667085] text-base md:text-lg">
-                    Turn Your Travel Ideas Into A Real <br /> Plan, Instantly.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-[20px] md:text-[22px] font-medium text-[#1D2939] mb-2">
-                    Sharing It With Friends
-                  </h3>
-                  <p className="text-[#667085] text-base md:text-lg">
-                    Send Your Plan To Friends Instantly <br /> And Collaborate
-                    In Real Time.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-[20px] md:text-[22px] font-medium text-[#1D2939] mb-2">
-                    Get Responses
-                  </h3>
-                  <p className="text-[#667085] text-base md:text-lg">
-                    Connect, Collaborate, And Create <br /> Unforgettable
-                    Journeys.
-                  </p>
-                </div>
+                {[
+                  { title: "Creating A Clear Plan", desc: <>Turn Your Travel Ideas Into A Real <br /> Plan, Instantly.</> },
+                  { title: "Sharing It With Friends", desc: <>Send Your Plan To Friends Instantly <br /> And Collaborate In Real Time.</> },
+                  { title: "Get Responses", desc: <>Connect, Collaborate, And Create <br /> Unforgettable Journeys.</> },
+                ].map((step, index) => (
+                  <div key={index} className={`transition-opacity duration-500 ${activeStep === index ? "opacity-100" : "opacity-50"}`}>
+                    <h3 className="text-[20px] md:text-[22px] font-medium text-[#1D2939] mb-2">
+                      {step.title}
+                    </h3>
+                    <p className="text-[#667085] text-base md:text-lg">
+                      {step.desc}
+                    </p>
+                  </div>
+                ))}
               </div>
 
               {/* Step Image Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Card 1 */}
-                <div className="rounded-[32px] border border-gray-200 p-6 flex items-center justify-center min-h-[320px]">
-                  <img
-                    src="/step1Img.png"
-                    alt="Step 1"
-                    className="max-w-full h-auto object-contain"
-                  />
-                </div>
-                {/* Card 2 */}
-                <div className="rounded-[32px] border border-gray-200 p-6 flex items-center justify-center min-h-[180px]">
-                  <img
-                    src="/Step2Img.png"
-                    alt="Step 2"
-                    className="max-w-full h-[260px] object-contain"
-                  />
-                </div>
-                {/* Card 3 */}
-                <div className="rounded-[32px] border border-gray-200 p-6 flex items-center justify-center min-h-[320px]">
-                  <img
-                    src="/Step3Img.png"
-                    alt="Step 3"
-                    className="max-w-full h-auto object-contain"
-                  />
-                </div>
+                {[
+                  { src: "/step1Img.png", alt: "Step 1", minH: "min-h-[320px]", imgClass: "max-w-full h-auto object-contain" },
+                  { src: "/Step2Img.png", alt: "Step 2", minH: "min-h-[180px]", imgClass: "max-w-full h-[260px] object-contain" },
+                  { src: "/Step3Img.png", alt: "Step 3", minH: "min-h-[320px]", imgClass: "max-w-full h-auto object-contain" },
+                ].map((card, index) => (
+                  <div
+                    key={index}
+                    className={`rounded-[32px] border-2 p-6 flex items-center justify-center ${card.minH} transition-all duration-500 ${
+                      activeStep === index
+                        ? "border-[#FFC700] shadow-[0_10px_40px_-10px_rgba(255,199,0,0.3)] scale-[1.02]"
+                        : "border-gray-200 opacity-60"
+                    }`}
+                  >
+                    <img src={card.src} alt={card.alt} className={card.imgClass} />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
+      </div>
 
       {/* Pricing Section */}
       <section id="pricing" className="bg-[#FDFCF6] py-16 lg:py-24">
@@ -713,10 +756,10 @@ export default function Index() {
                     </span>
                   </div>
                   <div className="text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
-                    $00
+                    Free
                   </div>
                   <p className="text-[#667085] text-sm md:text-base">
-                    Per Brand, Per Month
+                    Upto 5 plans
                   </p>
                 </div>
 
@@ -731,29 +774,19 @@ export default function Index() {
                   <ul className="space-y-4">
                     {[
                       "Create up to 5 plans",
-                      "Group tour planning",
-                      "Share with friends",
-                      "Cancel anytime",
+                      "Create group with friends",
+                      "Accept plans from friends",
+                      "Share plans with friends",
                     ].map((item) => (
                       <li
                         key={item}
                         className="flex items-center gap-3 text-[#667085]"
                       >
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                        >
-                          <circle cx="10" cy="10" r="10" fill="#F2F4F7" />
-                          <path
-                            d="M14 7L8.5 12.5L6 10"
-                            stroke="#1D2939"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                        <img
+                          src="/check circle.png"
+                          alt="check"
+                          className="w-5 h-5 flex-shrink-0"
+                        />
                         <span className="text-xs md:text-sm">{item}</span>
                       </li>
                     ))}
@@ -761,8 +794,18 @@ export default function Index() {
                 </div>
               </div>
 
-              <button className="w-full mt-8 py-3 bg-[#F2F4F7] rounded-full text-[#1D2939] text-base md:text-lg font-bold hover:bg-gray-200 transition-colors">
-                Select Plan
+              <button
+                onClick={!user ? () => navigate("/create-account") : undefined}
+                disabled={user ? (isPremiumActive || isFreePlan) : false}
+                className={`w-full mt-8 py-3 rounded-full text-base md:text-lg font-bold transition-colors ${
+                  user && isPremiumActive
+                    ? "bg-[#F2F4F7] text-[#98A2B3] cursor-not-allowed"
+                    : user && isFreePlan
+                      ? "bg-[#F2F4F7] text-[#1D2939] cursor-default"
+                      : "bg-[#F2F4F7] text-[#1D2939] hover:bg-gray-200"
+                }`}
+              >
+                {user && isFreePlan ? "Selected Plan" : "Select Plan"}
               </button>
             </div>
 
@@ -775,22 +818,17 @@ export default function Index() {
                     <span className="text-sm font-medium text-[#1D2939]">
                       Premium
                     </span>
-                    <svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path d="M6 9l6 6 6-6" transform="rotate(-180 12 12)" />
-                    </svg>
+                    <img
+                      src="/crown.png"
+                      alt="crown"
+                      className="w-4 h-4"
+                    />
                   </div>
                   <div className="text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
                     $19.99
                   </div>
                   <p className="text-[#667085] text-sm md:text-base">
-                    Per Brand, Per Year
+                    Per Year
                   </p>
                 </div>
 
@@ -805,29 +843,20 @@ export default function Index() {
                   <ul className="space-y-4">
                     {[
                       "Unlimited plans",
-                      "All Pro features",
-                      "Best value yearly plan",
+                      "Create group with friends",
+                      "Accept plans with friends",
+                      "Share plans with friends",
                       "Cancel anytime",
                     ].map((item) => (
                       <li
                         key={item}
                         className="flex items-center gap-3 text-[#667085]"
                       >
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 20 20"
-                          fill="none"
-                        >
-                          <circle cx="10" cy="10" r="10" fill="#FFF9E5" />
-                          <path
-                            d="M14 7L8.5 12.5L6 10"
-                            stroke="#FFC700"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
+                        <img
+                          src="/check circle.png"
+                          alt="check"
+                          className="w-5 h-5 flex-shrink-0"
+                        />
                         <span className="text-xs md:text-sm">{item}</span>
                       </li>
                     ))}
@@ -836,10 +865,15 @@ export default function Index() {
               </div>
 
               <button
-                onClick={handlePremiumPlanClick}
-                className="w-full mt-8 py-3 bg-[#FFC700] rounded-full text-black text-base md:text-lg font-bold hover:bg-[#E6B400] transition-colors flex items-center justify-center gap-2"
+                onClick={isPremiumActive ? undefined : handlePremiumPlanClick}
+                disabled={isPremiumActive}
+                className={`w-full mt-8 py-3 rounded-full text-base md:text-lg font-bold transition-colors flex items-center justify-center gap-2 ${
+                  isPremiumActive
+                    ? "bg-[#FFC700]/60 text-black/50 cursor-default"
+                    : "bg-[#FFC700] text-black hover:bg-[#E6B400]"
+                }`}
               >
-                Select Plan
+                {isPremiumActive ? "Selected Plan" : "Select Plan"}
               </button>
             </div>
           </div>

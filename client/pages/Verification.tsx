@@ -7,8 +7,10 @@ import {
   getPendingOtpContext,
   setAuthToken,
   setUser,
+  setSubscription,
   setVerifiedUser,
   UserProfile,
+  Subscription,
 } from "@/lib/auth";
 
 type VerifyOtpResponse = {
@@ -17,6 +19,7 @@ type VerifyOtpResponse = {
   data: {
     needs_onboarding: boolean;
     user?: UserProfile;
+    subscription?: Subscription;
     token: {
       tokenType: string;
       accessToken: string;
@@ -106,6 +109,10 @@ export default function Verification() {
         } else if ((res.data as any).id) {
           // If the API returns the user fields directly in res.data
           setUser(res.data as unknown as UserProfile);
+        }
+
+        if (res.data.subscription) {
+          setSubscription(res.data.subscription);
         }
 
         if (res.data.needs_onboarding) {

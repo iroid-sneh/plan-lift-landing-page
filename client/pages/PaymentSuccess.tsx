@@ -1,8 +1,37 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle } from "lucide-react";
+import { apiFetch } from "@/lib/api";
+import { setSubscription, setUser, Subscription, UserProfile } from "@/lib/auth";
+
+type ProfileResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    user: UserProfile;
+    subscription: Subscription;
+  };
+};
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await apiFetch<ProfileResponse>("/user/profile");
+        if (res.data?.subscription) {
+          setSubscription(res.data.subscription);
+        }
+        if (res.data?.user) {
+          setUser(res.data.user);
+        }
+      } catch {
+        // Silently fail — subscription will be fetched on next login
+      }
+    };
+    fetchProfile();
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-black/60 backdrop-blur-sm">
