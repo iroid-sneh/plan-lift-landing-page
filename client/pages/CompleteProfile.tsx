@@ -15,6 +15,7 @@ export default function CompleteProfile() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<File | null>(null);
 
@@ -25,13 +26,11 @@ export default function CompleteProfile() {
     countryCode: "+91",
   });
 
-  const verified = getVerifiedUser();
+  const verified = useRef(getVerifiedUser()).current;
 
   useEffect(() => {
     if (!verified) {
       if (localStorage.getItem("planlark.auth")) {
-        // If already logged in, maybe redirect to home? 
-        // For now, if no verified user context, go to create account
         navigate("/", { replace: true });
       } else {
         navigate("/create-account", { replace: true });
@@ -47,6 +46,7 @@ export default function CompleteProfile() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFieldErrors((prev) => ({ ...prev, [e.target.name]: "" }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,6 +54,7 @@ export default function CompleteProfile() {
     if (file) {
       setProfileImage(file);
       setPreviewUrl(URL.createObjectURL(file));
+      setFieldErrors((prev) => ({ ...prev, profileImage: "" }));
     }
   };
 
@@ -61,20 +62,30 @@ export default function CompleteProfile() {
     fileInputRef.current?.click();
   };
 
-  const handleSubmit = async () => {
-    if (!formData.fullName || !formData.email || !profileImage) {
-      setError("All fields including profile picture are required.");
-      return;
+  const validate = (): boolean => {
+    const errors: Record<string, string> = {};
+    if (!formData.fullName.trim()) errors.fullName = "Full name is required";
+    if (!formData.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      errors.email = "Please enter a valid email address";
     }
+    if (!profileImage) errors.profileImage = "Profile picture is required";
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validate()) return;
 
     try {
       setIsSubmitting(true);
       setError("");
 
       const body = new FormData();
-      body.append("profile", profileImage);
-      body.append("full_name", formData.fullName);
-      body.append("email", formData.email);
+      body.append("profile", profileImage!);
+      body.append("full_name", formData.fullName.trim());
+      body.append("email", formData.email.trim());
 
       const res = await apiFetch<ProfileUpdateResponse>("/user/info-update", {
         method: "POST",
@@ -117,7 +128,7 @@ export default function CompleteProfile() {
               <div className="w-full max-w-[400px]">
                 {/* Avatar Upload UI */}
                 <div
-                  className="relative w-[88px] h-[88px] mb-8 group cursor-pointer"
+                  className="relative w-[88px] h-[88px] mb-8 mx-auto group cursor-pointer"
                   onClick={triggerFileInput}
                 >
                   <input
@@ -156,6 +167,9 @@ export default function CompleteProfile() {
                     </svg>
                   </div>
                 </div>
+                {fieldErrors.profileImage && (
+                  <p className="text-sm text-red-500 -mt-4 mb-4 text-center">{fieldErrors.profileImage}</p>
+                )}
 
                 <div className="space-y-5">
                   {/* Full Name Input */}
@@ -169,8 +183,11 @@ export default function CompleteProfile() {
                       value={formData.fullName}
                       onChange={handleChange}
                       placeholder="Enter your Name"
-                      className="w-full h-[52px] border border-gray-200 rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all"
+                      className={`w-full h-[52px] border ${fieldErrors.fullName ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
                     />
+                    {fieldErrors.fullName && (
+                      <p className="text-sm text-red-500 mt-1">{fieldErrors.fullName}</p>
+                    )}
                   </div>
 
                   {/* Email Input */}
@@ -184,8 +201,11 @@ export default function CompleteProfile() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your Email"
-                      className="w-full h-[52px] border border-gray-200 rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all"
+                      className={`w-full h-[52px] border ${fieldErrors.email ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
                     />
+                    {fieldErrors.email && (
+                      <p className="text-sm text-red-500 mt-1">{fieldErrors.email}</p>
+                    )}
                   </div>
 
                   {/* Mobile Number Input Group - Pre-filled and Read-only */}
@@ -225,12 +245,12 @@ export default function CompleteProfile() {
             </div>
 
             {/* Right Side - Illustration Container matched to CreateAccount */}
-            <div className="w-full lg:w-[55%] bg-white flex items-end justify-center lg:items-center overflow-hidden">
-              <div className="relative w-full h-full lg:p-0">
+            <div className="w-full lg:w-[55%] bg-white flex items-center justify-center">
+              <div className="relative w-full h-full flex items-end justify-center p-6">
                 <img
                   src="/CompleteProfileImg.png"
                   alt="Profile Setup Illustration"
-                  className="w-full h-full object-contain object-center scale-105"
+                  className="w-full h-full object-contain object-center"
                 />
               </div>
             </div>

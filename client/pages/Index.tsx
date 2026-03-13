@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getUser, getSubscription, setSubscription, setUser, clearAuth, Subscription, UserProfile } from "@/lib/auth";
 import { apiFetch, getErrorMessage } from "@/lib/api";
 import FaqSection from "./faqSection";
@@ -56,11 +56,18 @@ export default function Index() {
   const [subscribeMessage, setSubscribeMessage] = useState("");
 
   const handleSubscribe = async () => {
-    if (!subscriberEmail || isSubscribing) return;
+    if (isSubscribing) return;
+
+    const trimmedEmail = subscriberEmail.trim();
+    if (!trimmedEmail) {
+      setSubscribeStatus("error");
+      setSubscribeMessage("Please enter an email address.");
+      return;
+    }
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(subscriberEmail)) {
+    if (!emailRegex.test(trimmedEmail)) {
       setSubscribeStatus("error");
       setSubscribeMessage("Please enter a valid email address.");
       return;
@@ -73,7 +80,7 @@ export default function Index() {
       await apiFetch("/subscribe", {
         method: "POST",
         auth: false,
-        body: { email: subscriberEmail },
+        body: { email: trimmedEmail },
       });
 
       setSubscribeStatus("success");
@@ -295,7 +302,7 @@ export default function Index() {
         <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px] py-6">
           <div className="flex items-center justify-between">
             {/* Logo - Fixed Path */}
-            <Link to="/" className="flex items-center gap-4">
+            <a href="/" onClick={(e) => { e.preventDefault(); window.location.href = "/"; }} className="flex items-center gap-4 cursor-pointer">
               <img
                 src="/logo.png"
                 alt="Planlark Logo"
@@ -304,7 +311,7 @@ export default function Index() {
               <span className="text-[22px] font-bold text-[#1D2939] font-satoshi">
                 planlark
               </span>
-            </Link>
+            </a>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-14">
@@ -592,28 +599,28 @@ export default function Index() {
               {/* Right Column: Text with Dividers */}
               <div className="w-full lg:w-1/2 flex flex-col gap-8">
                 <div className="space-y-6">
-                  <p className="text-[#475467] text-base md:text-lg leading-relaxed">
+                  <p className="text-[#5A5A59] text-base md:text-lg leading-relaxed font-satoshi font-normal">
                     Planlark was created to solve a simple but frustrating
                     problem: <br /> making plans with friends often goes
                     nowhere.
                   </p>
                   <div className="border-t border-gray-200" />
 
-                  <p className="text-[#475467] text-base md:text-lg leading-relaxed">
+                  <p className="text-[#5A5A59] text-base md:text-lg leading-relaxed font-satoshi font-normal">
                     Group chats drag on. Options pile up. People hesitate and
                     delay. In the <br /> end, nothing gets decided and plans
                     fall apart.
                   </p>
                   <div className="border-t border-gray-200" />
 
-                  <p className="text-[#475467] text-base md:text-lg leading-relaxed">
+                  <p className="text-[#5A5A59] text-base md:text-lg leading-relaxed font-satoshi font-normal">
                     Planlark flips this by removing endless options. Instead, it
                     promotes <br /> clear commitments with a single plan and a
                     deadline to respond.
                   </p>
                   <div className="border-t border-gray-200" />
 
-                  <h2 className="text-[#282827] text-lg md:text-2xl font-medium leading-relaxed">
+                  <h2 className="text-[#282827] text-lg md:text-2xl font-medium leading-relaxed font-satoshi">
                     Clear plans. Firm deadlines. Real results.
                   </h2>
                 </div>
@@ -900,11 +907,11 @@ export default function Index() {
               </p>
             </div>
 
-            <div className="hidden lg:block">
+            <div className="flex justify-center lg:justify-end w-full lg:w-auto">
               <img
                 src="/faqImg.png"
                 alt="FAQ illustration"
-                className="w-[380px] h-auto object-contain"
+                className="w-[250px] md:w-[320px] lg:w-[380px] h-auto object-contain"
               />
             </div>
           </div>
@@ -964,20 +971,20 @@ export default function Index() {
             {/* Left: Logo & Nav Links */}
             <div className="flex flex-col gap-10">
               {/* Logo */}
-              <Link to="/" className="flex items-center gap-3">
+              <a href="/" onClick={(e) => { e.preventDefault(); window.location.href = "/"; }} className="flex items-center gap-3 cursor-pointer">
                 <img
                   src="/FooterLogo.png"
                   alt="Planlark Logo"
                   className="h-10 w-10 object-contain"
                 />
                 <span className="text-[24px] font-bold text-white font-satoshi">
-                  Planlark
+                  planlark
                 </span>
-              </Link>
+              </a>
 
               {/* Navigation Links Row */}
               <nav className="flex flex-wrap items-center gap-x-8 gap-y-4">
-                {["Home", "About", "How It Works", "Pricing", "FAQ"].map(
+                {["Home", "About", "How It Work", "Pricing", "FAQ"].map(
                   (link) => (
                     <a
                       key={link}
@@ -992,7 +999,7 @@ export default function Index() {
             </div>
 
             {/* Right: Download Section */}
-            <div className="flex flex-col items-start lg:items-end gap-6">
+            <div className="flex flex-col items-start gap-6">
               <h3 className="text-white text-xl font-bold">Download our app</h3>
               <div className="flex flex-wrap gap-4">
                 {/* App Store Badge Style */}

@@ -17,7 +17,7 @@ export default function Navbar({ hideAuthButtons = false }: { hideAuthButtons?: 
             </div>
 
             {/* Center Links */}
-            <div className="hidden lg:flex items-center gap-10 text-[16px] text-[#667085] font-medium">
+            <div className="hidden lg:flex items-center gap-10 text-[24px] text-[#667085] font-regular">
                 <a href="/" className="hover:text-[#1D2939] transition-colors">
                     Home
                 </a>

@@ -13,6 +13,7 @@ export default function ContactUs() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,11 +26,26 @@ export default function ContactUs() {
     >,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFieldErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+  };
+
+  const validate = (): boolean => {
+    const errors: Record<string, string> = {};
+    if (!formData.fullName.trim()) errors.fullName = "Full name is required";
+    if (!formData.email.trim()) {
+      errors.email = "Email address is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      errors.email = "Please enter a valid email address";
+    }
+    if (!formData.message.trim()) errors.message = "Message is required";
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
+    if (!validate()) return;
 
     setError(null);
     setSuccessMessage(null);
@@ -51,10 +67,10 @@ export default function ContactUs() {
         method: "POST",
         auth: false,
         body: {
-          full_name: formData.fullName,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
+          full_name: formData.fullName.trim(),
+          email: formData.email.trim(),
+          subject: formData.subject.trim(),
+          message: formData.message.trim(),
         },
       });
 
@@ -88,13 +104,13 @@ export default function ContactUs() {
         {/* Header Section */}
         <div className="text-center mb-12 flex flex-col items-center">
           {/* Small Pill Badge */}
-          <div className="inline-flex items-center justify-center px-5 py-1.5 border border-gray-200 rounded-full bg-white mb-6 shadow-sm">
-            <span className="text-[13px] font-medium text-[#667085]">
+          <div className="inline-flex items-center justify-center px-5 py-1.5 border border-[#2828271A] rounded-full mb-2">
+            <span className="text-[13px] font-medium text-[#28282799]">
               Contact Us
             </span>
           </div>
 
-          <h1 className="text-[40px] md:text-[54px] font-bold text-[#1D2939] mb-4 tracking-tight">
+          <h1 className="text-[40px] md:text-[54px] font-bold text-[#1D2939] mb-2 tracking-tight">
             Have A Question?
           </h1>
 
@@ -118,8 +134,11 @@ export default function ContactUs() {
                 value={formData.fullName}
                 onChange={handleChange}
                 placeholder="John doe"
-                className="w-full h-[52px] border border-gray-200 rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white"
+                className={`w-full h-[52px] border ${fieldErrors.fullName ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white`}
               />
+              {fieldErrors.fullName && (
+                <p className="text-sm text-red-500 mt-1">{fieldErrors.fullName}</p>
+              )}
             </div>
 
             {/* Email Address */}
@@ -133,8 +152,11 @@ export default function ContactUs() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="johndoe@gmail.com"
-                className="w-full h-[52px] border border-gray-200 rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white"
+                className={`w-full h-[52px] border ${fieldErrors.email ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white`}
               />
+              {fieldErrors.email && (
+                <p className="text-sm text-red-500 mt-1">{fieldErrors.email}</p>
+              )}
             </div>
 
             {/* Subject Dropdown */}
@@ -185,12 +207,15 @@ export default function ContactUs() {
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Write your message..."
-                className="w-full min-h-[140px] border border-gray-200 rounded-xl p-4 text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white resize-none"
+                className={`w-full min-h-[140px] border ${fieldErrors.message ? "border-red-400" : "border-gray-200"} rounded-xl p-4 text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white resize-none`}
               ></textarea>
+              {fieldErrors.message && (
+                <p className="text-sm text-red-500 mt-1">{fieldErrors.message}</p>
+              )}
             </div>
 
             {error && (
-              <p className="text-sm text-red-600 mt-2" role="alert">
+              <p className="text-sm text-red-500 mt-2" role="alert">
                 {error}
               </p>
             )}
