@@ -1,29 +1,100 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch, getErrorMessage } from "@/lib/api";
 import { setPendingOtpContext } from "@/lib/auth";
 import Navbar from "@/components/Navbar";
 
+const countryCodes = [
+  { code: "+91", country: "India", flag: "🇮🇳", maxDigits: 10 },
+  { code: "+1", country: "USA", flag: "🇺🇸", maxDigits: 10 },
+  { code: "+1", country: "Canada", flag: "🇨🇦", maxDigits: 10 },
+  { code: "+44", country: "UK", flag: "🇬🇧", maxDigits: 10 },
+  { code: "+61", country: "Australia", flag: "🇦🇺", maxDigits: 9 },
+  { code: "+971", country: "UAE", flag: "🇦🇪", maxDigits: 9 },
+  { code: "+966", country: "Saudi Arabia", flag: "🇸🇦", maxDigits: 9 },
+  { code: "+65", country: "Singapore", flag: "🇸🇬", maxDigits: 8 },
+  { code: "+49", country: "Germany", flag: "🇩🇪", maxDigits: 11 },
+  { code: "+33", country: "France", flag: "🇫🇷", maxDigits: 9 },
+  { code: "+81", country: "Japan", flag: "🇯🇵", maxDigits: 10 },
+  { code: "+86", country: "China", flag: "🇨🇳", maxDigits: 11 },
+  { code: "+55", country: "Brazil", flag: "🇧🇷", maxDigits: 11 },
+  { code: "+27", country: "South Africa", flag: "🇿🇦", maxDigits: 9 },
+  { code: "+234", country: "Nigeria", flag: "🇳🇬", maxDigits: 10 },
+  { code: "+254", country: "Kenya", flag: "🇰🇪", maxDigits: 9 },
+  { code: "+60", country: "Malaysia", flag: "🇲🇾", maxDigits: 10 },
+  { code: "+63", country: "Philippines", flag: "🇵🇭", maxDigits: 10 },
+  { code: "+82", country: "South Korea", flag: "🇰🇷", maxDigits: 10 },
+  { code: "+39", country: "Italy", flag: "🇮🇹", maxDigits: 10 },
+  { code: "+34", country: "Spain", flag: "🇪🇸", maxDigits: 9 },
+  { code: "+7", country: "Russia", flag: "🇷🇺", maxDigits: 10 },
+  { code: "+52", country: "Mexico", flag: "🇲🇽", maxDigits: 10 },
+  { code: "+62", country: "Indonesia", flag: "🇮🇩", maxDigits: 12 },
+  { code: "+90", country: "Turkey", flag: "🇹🇷", maxDigits: 10 },
+  { code: "+880", country: "Bangladesh", flag: "🇧🇩", maxDigits: 10 },
+  { code: "+92", country: "Pakistan", flag: "🇵🇰", maxDigits: 10 },
+  { code: "+94", country: "Sri Lanka", flag: "🇱🇰", maxDigits: 9 },
+  { code: "+977", country: "Nepal", flag: "🇳🇵", maxDigits: 10 },
+];
+
 export default function CreateAccount() {
-  const [isLoginView, setIsLoginView] = useState(false); // Added state to toggle Login/Register
+  const [isLoginView, setIsLoginView] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState(countryCodes[0]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
 
-  // Validation: Only allow numbers and max 10 digits
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false);
+        setSearchQuery("");
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Focus search input when dropdown opens
+  useEffect(() => {
+    if (showDropdown && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [showDropdown]);
+
+  const filteredCountries = countryCodes.filter(
+    (c) =>
+      c.country.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.code.includes(searchQuery)
+  );
+
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, ""); // Remove non-numeric
-    if (value.length <= 10) {
+    const value = e.target.value.replace(/\D/g, "");
+    if (value.length <= selectedCountry.maxDigits) {
       setPhoneNumber(value);
-      if (value.length === 10) setError("");
+      if (error) setError("");
     }
   };
 
+  const handleSelectCountry = (country: typeof countryCodes[0]) => {
+    setSelectedCountry(country);
+    setShowDropdown(false);
+    setSearchQuery("");
+    setPhoneNumber("");
+    setError("");
+  };
+
   const handleContinue = async () => {
-    if (phoneNumber.length !== 10) {
-      setError("Please enter a valid 10-digit mobile number.");
+    if (phoneNumber.length !== selectedCountry.maxDigits) {
+      setError(`Please enter a valid ${selectedCountry.maxDigits}-digit mobile number.`);
       return;
     }
     // Only require agreement if we are in the Register view
@@ -39,14 +110,14 @@ export default function CreateAccount() {
         method: "POST",
         auth: false,
         body: {
-          country_code: "+91",
+          country_code: selectedCountry.code,
           phone_number: phoneNumber,
           type: isLoginView ? 2 : 1,
         },
       });
 
       setPendingOtpContext({
-        country_code: "+91",
+        country_code: selectedCountry.code,
         phone_number: phoneNumber,
         flowType: isLoginView ? "login" : "register",
       });
@@ -107,14 +178,72 @@ export default function CreateAccount() {
                     Mobile Number<span className="text-red-500 ml-1">*</span>
                   </label>
                   <div className="flex gap-3 h-[52px]">
-                    {/* Static Country Code Box */}
-                    <div className="w-[70px] flex items-center justify-center border border-gray-200 rounded-xl bg-white text-[#667085] font-medium text-base">
-                      +91
+                    {/* Country Code Dropdown */}
+                    <div className="relative" ref={dropdownRef}>
+                      <button
+                        type="button"
+                        ref={triggerRef}
+                        onClick={() => {
+                          if (!showDropdown && triggerRef.current) {
+                            const rect = triggerRef.current.getBoundingClientRect();
+                            setDropdownPos({ top: rect.bottom + 4, left: rect.left });
+                          }
+                          setShowDropdown(!showDropdown);
+                        }}
+                        className={`w-[100px] h-full flex items-center justify-center gap-1.5 border ${showDropdown ? "border-[#FFC700]" : "border-gray-200"} rounded-xl bg-white text-[#667085] font-medium text-base hover:border-[#FFC700] transition-all cursor-pointer`}
+                      >
+                        <span className="text-lg">{selectedCountry.flag}</span>
+                        <span>{selectedCountry.code}</span>
+                        <svg className={`w-3.5 h-3.5 transition-transform ${showDropdown ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+
+                      {showDropdown && (
+                        <div
+                          style={{ top: dropdownPos.top, left: dropdownPos.left }}
+                          className="fixed w-[260px] bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                          {/* Search */}
+                          <div className="p-2 border-b border-gray-100">
+                            <input
+                              ref={searchInputRef}
+                              type="text"
+                              placeholder="Search country..."
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-[#FFC700] placeholder:text-gray-300"
+                            />
+                          </div>
+                          {/* Country List */}
+                          <div className="max-h-[200px] overflow-y-auto">
+                            {filteredCountries.length === 0 ? (
+                              <div className="px-4 py-3 text-sm text-gray-400 text-center">No results</div>
+                            ) : (
+                              filteredCountries.map((c, i) => (
+                                <button
+                                  key={`${c.code}-${c.country}-${i}`}
+                                  type="button"
+                                  onClick={() => handleSelectCountry(c)}
+                                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-[#FFF8E1] transition-colors cursor-pointer ${
+                                    selectedCountry.code === c.code && selectedCountry.country === c.country
+                                      ? "bg-[#FFF8E1] font-semibold"
+                                      : ""
+                                  }`}
+                                >
+                                  <span className="text-lg">{c.flag}</span>
+                                  <span className="text-[#1D2939] flex-1 text-left">{c.country}</span>
+                                  <span className="text-[#667085]">{c.code}</span>
+                                </button>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                      )}
                     </div>
                     {/* Phone Input */}
                     <input
                       type="tel"
-                      placeholder="99999 67676"
+                      placeholder={`${"9".repeat(selectedCountry.maxDigits)}`}
                       value={phoneNumber}
                       onChange={handlePhoneChange}
                       className={`flex-1 px-4 border ${error ? "border-red-400" : "border-gray-200"} rounded-xl bg-white text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
@@ -153,8 +282,8 @@ export default function CreateAccount() {
                   disabled={
                     isSubmitting ||
                     (isLoginView
-                      ? phoneNumber.length < 10
-                      : !agreed || phoneNumber.length < 10)
+                      ? phoneNumber.length !== selectedCountry.maxDigits
+                      : !agreed || phoneNumber.length !== selectedCountry.maxDigits)
                   }
                   className="w-full h-[52px] bg-[#FFC700] hover:bg-[#E6B400] disabled:bg-[#FFC700]/50 disabled:cursor-not-allowed rounded-full text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-md"
                 >
