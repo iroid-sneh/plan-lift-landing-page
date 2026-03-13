@@ -49,6 +49,29 @@ export default function Index() {
   const [activeStep, setActiveStep] = useState(0);
   const howItWorksSectionRef = useRef<HTMLDivElement>(null);
 
+  // Active nav section tracking
+  const [activeSection, setActiveSection] = useState("home");
+
+  useEffect(() => {
+    const sectionIds = ["home", "about", "how-it-work", "pricing", "faq"];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: "-40% 0px -50% 0px", threshold: 0 }
+    );
+
+    for (const id of sectionIds) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
+    return () => observer.disconnect();
+  }, []);
+
   // Subscription states
   const [subscriberEmail, setSubscriberEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
@@ -295,10 +318,13 @@ export default function Index() {
         .animate-highlight {
           animation: highlight-pulse 3s ease-out;
         }
+        section[id], div[id] {
+          scroll-margin-top: 100px;
+        }
       `}</style>
 
       {/* 1. NAVBAR */}
-      <header className="bg-[#FDFCF6]">
+      <header className="bg-[#FDFCF6] sticky top-0 z-50 border-b border-gray-100">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px] py-6">
           <div className="flex items-center justify-between">
             {/* Logo - Fixed Path */}
@@ -315,33 +341,25 @@ export default function Index() {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-14">
-              <a href="#home" className="text-[#1D2939] text-xl font-bold">
-                Home
-              </a>
-              <a
-                href="#about"
-                className="text-[#667085] text-xl hover:text-[#1D2939] transition-colors"
-              >
-                About
-              </a>
-              <a
-                href="#how-it-work"
-                className="text-[#667085] text-xl hover:text-[#1D2939] transition-colors"
-              >
-                How It Work
-              </a>
-              <a
-                href="#pricing"
-                className="text-[#667085] text-xl hover:text-[#1D2939] transition-colors"
-              >
-                Pricing
-              </a>
-              <a
-                href="#faq"
-                className="text-[#667085] text-xl hover:text-[#1D2939] transition-colors"
-              >
-                FAQ
-              </a>
+              {[
+                { id: "home", label: "Home" },
+                { id: "about", label: "About" },
+                { id: "how-it-work", label: "How It Work" },
+                { id: "pricing", label: "Pricing" },
+                { id: "faq", label: "FAQ" },
+              ].map((item) => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className={`text-xl transition-colors ${
+                    activeSection === item.id
+                      ? "text-[#1D2939] font-bold"
+                      : "text-[#667085] hover:text-[#1D2939]"
+                  }`}
+                >
+                  {item.label}
+                </a>
+              ))}
             </nav>
 
             {/* CTA Buttons */}
@@ -570,7 +588,7 @@ export default function Index() {
       </section>
 
       {/* About Section - Your Smarter Way To Plan Together */}
-      <section id="about" className="bg-[#FDFCF6] py-14 lg:py-20">
+      <section id="about" className="bg-[#FDFCF6] py-14 lg:py-8">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
             {/* 1. Section Header (Reduced bottom margin to close the gap) */}
@@ -631,8 +649,8 @@ export default function Index() {
       </section>
 
       {/* How It Works - 3 Easy Steps (Scroll-driven) */}
-      <div ref={howItWorksSectionRef} className="relative" style={{ height: "250vh" }}>
-      <section id="how-it-work" className="bg-[#FDFCF6] py-16 lg:py-20 sticky top-0">
+      <div id="how-it-work" ref={howItWorksSectionRef} className="relative" style={{ height: "250vh" }}>
+      <section className="bg-[#FDFCF6] py-16 lg:py-20 sticky top-0">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
             {/* 1. Section Header */}

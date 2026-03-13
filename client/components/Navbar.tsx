@@ -1,9 +1,34 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getUser } from "@/lib/auth";
 
 export default function Navbar({ hideAuthButtons = false }: { hideAuthButtons?: boolean }) {
     const navigate = useNavigate();
+    const location = useLocation();
     const user = getUser();
+    const isHomePage = location.pathname === "/";
+
+    const handleNavClick = (e: React.MouseEvent, hash: string) => {
+        e.preventDefault();
+        if (isHomePage) {
+            if (!hash) {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            } else {
+                const el = document.querySelector(hash);
+                el?.scrollIntoView({ behavior: "smooth" });
+            }
+        } else {
+            // Navigate to home first, then scroll after render
+            navigate("/");
+            setTimeout(() => {
+                if (!hash) {
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                } else {
+                    const el = document.querySelector(hash);
+                    el?.scrollIntoView({ behavior: "smooth" });
+                }
+            }, 100);
+        }
+    };
 
     return (
         <nav className="w-full flex items-center justify-between px-6 md:px-12 lg:px-20 py-5 border-b border-gray-100 bg-[#FFFDF7]">
@@ -18,27 +43,22 @@ export default function Navbar({ hideAuthButtons = false }: { hideAuthButtons?: 
 
             {/* Center Links */}
             <div className="hidden lg:flex items-center gap-10 text-[24px] text-[#667085] font-regular">
-                <a href="/" className="hover:text-[#1D2939] transition-colors">
-                    Home
-                </a>
-                <a href="/#about" className="hover:text-[#1D2939] transition-colors">
-                    About
-                </a>
-                <a
-                    href="/#how-it-work"
-                    className="hover:text-[#1D2939] transition-colors"
-                >
-                    How It Work
-                </a>
-                <a
-                    href="/#pricing"
-                    className="hover:text-[#1D2939] transition-colors"
-                >
-                    Pricing
-                </a>
-                <a href="/#faq" className="hover:text-[#1D2939] transition-colors">
-                    FAQ
-                </a>
+                {[
+                    { label: "Home", hash: "" },
+                    { label: "About", hash: "#about" },
+                    { label: "How It Work", hash: "#how-it-work" },
+                    { label: "Pricing", hash: "#pricing" },
+                    { label: "FAQ", hash: "#faq" },
+                ].map((item) => (
+                    <a
+                        key={item.label}
+                        href={`/${item.hash}`}
+                        onClick={(e) => handleNavClick(e, item.hash)}
+                        className="hover:text-[#1D2939] transition-colors"
+                    >
+                        {item.label}
+                    </a>
+                ))}
             </div>
 
             {/* Right Buttons */}
