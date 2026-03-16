@@ -63,7 +63,7 @@ export default function Navbar({ hideAuthButtons = false }: { hideAuthButtons?: 
                 </div>
 
                 {/* Center Links - Desktop */}
-                <div className="hidden lg:flex items-center gap-10 text-[24px] text-[#667085] font-regular">
+                <div className="hidden xl:flex items-center gap-10 text-[24px] text-[#667085] font-regular">
                     {navLinks.map((item) => (
                         <a
                             key={item.label}
@@ -77,7 +77,7 @@ export default function Navbar({ hideAuthButtons = false }: { hideAuthButtons?: 
                 </div>
 
                 {/* Right Buttons - Desktop */}
-                <div className="hidden lg:flex items-center gap-4">
+                <div className="hidden xl:flex items-center gap-4">
                     {!hideAuthButtons && !user && (
                         <button
                             onClick={() => navigate("/create-account")}
@@ -90,7 +90,7 @@ export default function Navbar({ hideAuthButtons = false }: { hideAuthButtons?: 
 
                 {/* Hamburger Button - Mobile */}
                 <button
-                    className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="xl:hidden flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
                     onClick={() => setMobileMenuOpen(true)}
                     aria-label="Open menu"
                 >
@@ -104,7 +104,7 @@ export default function Navbar({ hideAuthButtons = false }: { hideAuthButtons?: 
 
             {/* Mobile Menu - Full Screen */}
             {mobileMenuOpen && (
-                <div className="fixed inset-0 z-50 lg:hidden bg-white flex flex-col overflow-hidden">
+                <div className="fixed inset-0 z-50 xl:hidden bg-white flex flex-col overflow-hidden">
                     {/* Header */}
                     <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-gray-100">
                         <div className="cursor-pointer" onClick={() => { setMobileMenuOpen(false); navigate("/"); }}>

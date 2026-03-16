@@ -105,9 +105,9 @@ export default function CompleteProfile() {
   return (
     <div className="min-h-screen bg-[#FFFDF7] flex flex-col relative overflow-hidden font-satoshi">
       <Navbar hideAuthButtons />
-      <main className="flex-1 flex items-center justify-center p-4 md:p-10 w-full relative z-10">
-        {/* Background Decorative Dashed Circles */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <main className="flex-1 flex items-center justify-center px-4 py-4 md:p-10 w-full relative z-10">
+        {/* Background Decorative Dashed Circles - hidden on small mobile */}
+        <div className="absolute inset-0 hidden sm:flex items-center justify-center pointer-events-none">
           <div className="relative w-[1000px] h-[1000px]">
             <div className="absolute inset-0 rounded-full border border-dashed border-gray-300" />
             <div className="absolute inset-[120px] rounded-full border border-dashed border-gray-300" />
@@ -115,20 +115,20 @@ export default function CompleteProfile() {
         </div>
 
         {/* Main Card */}
-        <div className="w-full max-w-[1240px] bg-white rounded-[40px] border border-gray-100 shadow-[0_10px_50px_rgba(0,0,0,0.05)] overflow-hidden relative z-10">
-          <div className="flex flex-col lg:flex-row min-h-[650px]">
+        <div className="w-full max-w-[1240px] bg-white rounded-[20px] md:rounded-[40px] border border-gray-100 shadow-[0_10px_50px_rgba(0,0,0,0.05)] overflow-hidden relative z-10">
+          <div className="flex flex-col lg:flex-row lg:min-h-[650px]">
             {/* Left Side - Form Container */}
-            <div className="w-full lg:w-[45%] p-8 md:p-16 lg:pl-20 lg:pr-10 flex flex-col justify-center">
+            <div className="w-full lg:w-[45%] px-5 py-5 md:p-16 lg:pl-20 lg:pr-10 flex flex-col justify-center">
               {/* Typography */}
-              <h1 className="text-[32px] md:text-[40px] font-bold text-[#1D2939] mb-8 leading-tight tracking-tight">
+              <h1 className="text-[22px] sm:text-[24px] md:text-[40px] font-bold text-[#1D2939] mb-3 sm:mb-5 md:mb-8 leading-tight tracking-tight">
                 Complete Your Profile
               </h1>
 
-              {/* Form Area - max width updated to match CreateAccount inputs */}
+              {/* Form Area */}
               <div className="w-full max-w-[400px]">
                 {/* Avatar Upload UI */}
                 <div
-                  className="relative w-[88px] h-[88px] mb-8 mx-auto group cursor-pointer"
+                  className="relative w-[72px] h-[72px] sm:w-[86px] sm:h-[86px] md:w-[88px] md:h-[88px] mb-3 sm:mb-5 md:mb-8 mx-auto group cursor-pointer"
                   onClick={triggerFileInput}
                 >
                   <input
@@ -171,10 +171,10 @@ export default function CompleteProfile() {
                   <p className="text-sm text-red-500 -mt-4 mb-4 text-center">{fieldErrors.profileImage}</p>
                 )}
 
-                <div className="space-y-5">
+                <div className="space-y-4 md:space-y-5">
                   {/* Full Name Input */}
                   <div>
-                    <label className="block text-[15px] font-bold text-[#1D2939] mb-2">
+                    <label className="block text-sm md:text-[15px] font-bold text-[#1D2939] mb-2">
                       Full Name<span className="text-red-500 ml-1">*</span>
                     </label>
                     <input
@@ -183,7 +183,7 @@ export default function CompleteProfile() {
                       value={formData.fullName}
                       onChange={handleChange}
                       placeholder="Enter your Name"
-                      className={`w-full h-[52px] border ${fieldErrors.fullName ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
+                      className={`w-full h-[48px] md:h-[52px] border ${fieldErrors.fullName ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-sm md:text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
                     />
                     {fieldErrors.fullName && (
                       <p className="text-sm text-red-500 mt-1">{fieldErrors.fullName}</p>
@@ -192,7 +192,7 @@ export default function CompleteProfile() {
 
                   {/* Email Input */}
                   <div>
-                    <label className="block text-[15px] font-bold text-[#1D2939] mb-2">
+                    <label className="block text-sm md:text-[15px] font-bold text-[#1D2939] mb-2">
                       Email<span className="text-red-500 ml-1">*</span>
                     </label>
                     <input
@@ -201,7 +201,7 @@ export default function CompleteProfile() {
                       value={formData.email}
                       onChange={handleChange}
                       placeholder="Enter your Email"
-                      className={`w-full h-[52px] border ${fieldErrors.email ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
+                      className={`w-full h-[48px] md:h-[52px] border ${fieldErrors.email ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-sm md:text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
                     />
                     {fieldErrors.email && (
                       <p className="text-sm text-red-500 mt-1">{fieldErrors.email}</p>
@@ -210,11 +210,11 @@ export default function CompleteProfile() {
 
                   {/* Mobile Number Input Group - Pre-filled and Read-only */}
                   <div>
-                    <label className="block text-[15px] font-bold text-[#1D2939] mb-2">
+                    <label className="block text-sm md:text-[15px] font-bold text-[#1D2939] mb-2">
                       Mobile Number<span className="text-red-500 ml-1">*</span>
                     </label>
-                    <div className="flex gap-3 h-[52px]">
-                      <div className="w-[70px] flex items-center justify-center border border-gray-200 rounded-xl bg-gray-50 text-[#667085] font-medium text-base">
+                    <div className="flex gap-3 h-[48px] md:h-[52px]">
+                      <div className="w-[70px] flex items-center justify-center border border-gray-200 rounded-xl bg-gray-50 text-[#667085] font-medium text-sm md:text-base">
                         {formData.countryCode}
                       </div>
                       <input
@@ -222,7 +222,7 @@ export default function CompleteProfile() {
                         name="mobile"
                         value={formData.mobile}
                         readOnly
-                        className="flex-1 px-4 border border-gray-200 rounded-xl bg-gray-50 text-base text-[#667085] focus:outline-none cursor-not-allowed"
+                        className="flex-1 px-4 border border-gray-200 rounded-xl bg-gray-50 text-sm md:text-base text-[#667085] focus:outline-none cursor-not-allowed"
                         placeholder="Enter mobile number"
                       />
                     </div>
@@ -236,7 +236,7 @@ export default function CompleteProfile() {
                   <button
                     onClick={handleSubmit}
                     disabled={isSubmitting}
-                    className="w-full h-[52px] mt-2 bg-[#FFC700] hover:bg-[#E6B400] disabled:bg-[#FFC700]/60 disabled:cursor-not-allowed rounded-full text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-md"
+                    className="w-full h-[48px] md:h-[52px] mt-2 bg-[#FFC700] hover:bg-[#E6B400] disabled:bg-[#FFC700]/60 disabled:cursor-not-allowed rounded-full text-[15px] md:text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-md"
                   >
                     {isSubmitting ? "Updating..." : "Verify & Continue"}
                   </button>
@@ -244,8 +244,8 @@ export default function CompleteProfile() {
               </div>
             </div>
 
-            {/* Right Side - Illustration Container matched to CreateAccount */}
-            <div className="w-full lg:w-[55%] bg-white flex items-center justify-center">
+            {/* Right Side - Illustration Container (hidden on mobile) */}
+            <div className="hidden lg:flex w-full lg:w-[55%] bg-white items-center justify-center">
               <div className="relative w-full h-full flex items-end justify-center p-6">
                 <img
                   src="/CompleteProfileImg.png"

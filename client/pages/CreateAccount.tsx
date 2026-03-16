@@ -138,9 +138,9 @@ export default function CreateAccount() {
   return (
     <div className="min-h-screen bg-[#FFFDF7] flex flex-col relative overflow-hidden font-satoshi">
       <Navbar hideAuthButtons />
-      <main className="flex-1 flex items-center justify-center p-4 md:p-10 w-full relative z-10">
-        {/* Background Decorative Dashed Circles */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <main className="flex-1 flex items-center justify-center px-4 py-4 md:p-10 w-full relative z-10">
+        {/* Background Decorative Dashed Circles - hidden on small mobile */}
+        <div className="absolute inset-0 hidden sm:flex items-center justify-center pointer-events-none">
           <div className="relative w-[1000px] h-[1000px]">
             <div className="absolute inset-0 rounded-full border border-dashed border-gray-300" />
             <div className="absolute inset-[120px] rounded-full border border-dashed border-gray-300" />
@@ -148,36 +148,36 @@ export default function CreateAccount() {
         </div>
 
         {/* Main Card */}
-        <div className="w-full max-w-[1240px] bg-white rounded-[40px] border border-gray-100 shadow-[0_10px_50px_rgba(0,0,0,0.05)] overflow-hidden relative z-10">
-          <div className="flex flex-col lg:flex-row min-h-[650px]">
+        <div className="w-full max-w-[1240px] bg-white rounded-[20px] md:rounded-[40px] border border-gray-100 shadow-[0_10px_50px_rgba(0,0,0,0.05)] overflow-hidden relative z-10">
+          <div className="flex flex-col lg:flex-row lg:min-h-[650px]">
             {/* Left Side - Form Container */}
-            <div className="w-full lg:w-[45%] p-8 md:p-16 lg:pl-20 lg:pr-10 flex flex-col justify-center">
+            <div className="w-full lg:w-[45%] px-5 py-5 md:p-16 lg:pl-20 lg:pr-10 flex flex-col justify-center">
               {/* Logo Wrapper */}
-              <div className="w-[100px] h-[100px] flex items-center justify-center mb-8 shadow-sm">
+              <div className="w-[56px] h-[56px] sm:w-[72px] sm:h-[72px] md:w-[100px] md:h-[100px] flex items-center justify-center mb-3 sm:mb-5 md:mb-8 shadow-sm">
                 <img
                   src="/logo.png"
                   alt="Planlift Logo"
-                  className="w-24 h-24 object-contain"
+                  className="w-12 h-12 sm:w-16 sm:h-16 md:w-24 md:h-24 object-contain"
                 />
               </div>
 
               {/* Dynamic Typography based on Login/Register state */}
-              <h1 className="text-[32px] md:text-[40px] font-bold text-[#1D2939] mb-3 leading-tight tracking-tight">
+              <h1 className="text-[22px] sm:text-[24px] md:text-[40px] font-bold text-[#1D2939] mb-1 sm:mb-2 md:mb-3 leading-tight tracking-tight">
                 {isLoginView ? "Welcome Back!" : "Create an Account"}
               </h1>
-              <p className="text-base text-[#667085] mb-8 leading-relaxed max-w-[340px]">
+              <p className="text-xs sm:text-sm md:text-base text-[#667085] mb-4 sm:mb-5 md:mb-8 leading-relaxed max-w-[340px]">
                 {isLoginView
                   ? "Enter your mobile number to continue"
                   : "Sign up and start organizing shared tasks with friends today"}
               </p>
 
               {/* Input Form */}
-              <div className="space-y-5 max-w-[400px]">
+              <div className="space-y-4 md:space-y-5 w-full md:max-w-[400px]">
                 <div>
-                  <label className="block text-[15px] font-bold text-[#1D2939] mb-2">
+                  <label className="block text-sm md:text-[15px] font-bold text-[#1D2939] mb-2">
                     Mobile Number<span className="text-red-500 ml-1">*</span>
                   </label>
-                  <div className="flex gap-3 h-[52px]">
+                  <div className="flex gap-2 sm:gap-3 h-[44px] sm:h-[48px] md:h-[52px]">
                     {/* Country Code Dropdown */}
                     <div className="relative" ref={dropdownRef}>
                       <button
@@ -190,7 +190,7 @@ export default function CreateAccount() {
                           }
                           setShowDropdown(!showDropdown);
                         }}
-                        className={`w-[100px] h-full flex items-center justify-center gap-1.5 border ${showDropdown ? "border-[#FFC700]" : "border-gray-200"} rounded-xl bg-white text-[#667085] font-medium text-base hover:border-[#FFC700] transition-all cursor-pointer`}
+                        className={`w-[88px] sm:w-[100px] h-full flex items-center justify-center gap-1 sm:gap-1.5 border ${showDropdown ? "border-[#FFC700]" : "border-gray-200"} rounded-xl bg-white text-[#667085] font-medium text-sm sm:text-base hover:border-[#FFC700] transition-all cursor-pointer`}
                       >
                         <span className="text-lg">{selectedCountry.flag}</span>
                         <span>{selectedCountry.code}</span>
@@ -246,7 +246,7 @@ export default function CreateAccount() {
                       placeholder={`${"9".repeat(selectedCountry.maxDigits)}`}
                       value={phoneNumber}
                       onChange={handlePhoneChange}
-                      className={`flex-1 px-4 border ${error ? "border-red-400" : "border-gray-200"} rounded-xl bg-white text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
+                      className={`flex-1 min-w-0 px-3 sm:px-4 border ${error ? "border-red-400" : "border-gray-200"} rounded-xl bg-white text-sm sm:text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
                     />
                   </div>
                   {error && (
@@ -269,9 +269,14 @@ export default function CreateAccount() {
                       className="text-sm text-[#667085] cursor-pointer select-none"
                     >
                       By signing up, you agree to our{" "}
-                      <button className="text-[#FFC700] font-semibold hover:underline">
+                      <a
+                        href="https://dev.iroidsolutions.com:4002/docs/Planlark_Terms_of_Service.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[#FFC700] font-semibold hover:underline"
+                      >
                         Terms and Conditions
-                      </button>
+                      </a>
                     </label>
                   </div>
                 )}
@@ -285,13 +290,13 @@ export default function CreateAccount() {
                       ? phoneNumber.length !== selectedCountry.maxDigits
                       : !agreed || phoneNumber.length !== selectedCountry.maxDigits)
                   }
-                  className="w-full h-[52px] bg-[#FFC700] hover:bg-[#E6B400] disabled:bg-[#FFC700]/50 disabled:cursor-not-allowed rounded-full text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-md"
+                  className="w-full h-[44px] sm:h-[48px] md:h-[52px] bg-[#FFC700] hover:bg-[#E6B400] disabled:bg-[#FFC700]/50 disabled:cursor-not-allowed rounded-full text-sm sm:text-[15px] md:text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-md"
                 >
                   {isSubmitting ? "Sending OTP..." : "Continue"}
                 </button>
 
                 {/* Dynamic Footer Links */}
-                <p className="text-center text-[15px] text-[#667085] mt-4">
+                <p className="text-center text-sm md:text-[15px] text-[#667085] mt-3 md:mt-4">
                   {isLoginView
                     ? "Don't have an Account? "
                     : "Already have an account? "}
@@ -305,8 +310,8 @@ export default function CreateAccount() {
               </div>
             </div>
 
-            {/* Right Side - Illustration Container (Left Exactly As Is) */}
-            <div className="w-full lg:w-[55%] bg-white flex items-end justify-center lg:items-center overflow-hidden">
+            {/* Right Side - Illustration Container (hidden on mobile) */}
+            <div className="hidden lg:flex w-full lg:w-[55%] bg-white items-center justify-center overflow-hidden">
               <div className="relative w-full h-full lg:p-0">
                 <img
                   src="/CreateAccountImg.png"

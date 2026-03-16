@@ -17,6 +17,7 @@ export default function Index() {
   const [openItems, setOpenItems] = useState<number[]>([0]); // For FAQ section
   const [showUserMenu, setShowUserMenu] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  const mobileUserMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const user = getUser();
   const [subscription, setLocalSubscription] = useState(getSubscription());
@@ -208,10 +209,10 @@ export default function Index() {
   // Close menu on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        userMenuRef.current &&
-        !userMenuRef.current.contains(event.target as Node)
-      ) {
+      const target = event.target as Node;
+      const isInsideDesktop = userMenuRef.current?.contains(target);
+      const isInsideMobile = mobileUserMenuRef.current?.contains(target);
+      if (!isInsideDesktop && !isInsideMobile) {
         setShowUserMenu(false);
       }
     };
@@ -291,12 +292,12 @@ export default function Index() {
       >
         <button
           onClick={onToggle}
-          className="w-full px-8 py-8 text-left flex items-start justify-between gap-4"
+          className="w-full px-5 py-5 md:px-8 md:py-8 text-left flex items-start justify-between gap-4"
         >
           <div className="flex items-center gap-4 relative">
             {/* Yellow Indicator Bar */}
-            <div className="absolute -left-8 w-1.5 h-6 rounded-r-full bg-[#FFC700]" />
-            <h3 className="text-xl md:text-[22px] font-bold text-[#1D2939]">
+            <div className="absolute -left-5 md:-left-8 w-1.5 h-6 rounded-r-full bg-[#FFC700]" />
+            <h3 className="text-[18px] md:text-[22px] font-bold text-[#1D2939]">
               {item.question}
             </h3>
           </div>
@@ -329,9 +330,9 @@ export default function Index() {
         </button>
 
         <div
-          className={`px-8 overflow-hidden transition-all duration-300 ${isOpen ? "max-h-[500px] pb-8" : "max-h-0"}`}
+          className={`px-5 md:px-8 overflow-hidden transition-all duration-300 ${isOpen ? "max-h-[500px] pb-6 md:pb-8" : "max-h-0"}`}
         >
-          <p className="text-[#667085] text-lg leading-relaxed">
+          <p className="text-[#667085] text-[16px] md:text-lg leading-relaxed">
             {item.answer}
           </p>
         </div>
@@ -356,7 +357,7 @@ export default function Index() {
       `}</style>
 
       {/* 1. NAVBAR */}
-      <header className="bg-[#FDFCF6] sticky top-0 z-50 border-b border-gray-100">
+      <header className="bg-[#FDFCF6] sticky top-0 z-50 border-b border-gray-100 relative">
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] py-3 md:py-6">
           <div className="flex items-center justify-between">
             {/* Logo - Fixed Path */}
@@ -379,7 +380,7 @@ export default function Index() {
             </a>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-14">
+            <nav className="hidden xl:flex items-center gap-14">
               {[
                 { id: "home", label: "Home" },
                 { id: "about", label: "About" },
@@ -402,7 +403,7 @@ export default function Index() {
             </nav>
 
             {/* CTA Buttons - Desktop */}
-            <div className="hidden lg:flex items-center gap-4">
+            <div className="hidden xl:flex items-center gap-4">
               <button
                 onClick={() => navigate("/contact-us")}
                 className="px-8 py-3 bg-[#FFC700] rounded-full text-black text-lg font-bold hover:bg-[#E6B400] transition-colors"
@@ -458,23 +459,70 @@ export default function Index() {
               )}
             </div>
 
-            {/* Hamburger Button - Mobile */}
-            <button
-              className="lg:hidden flex flex-col justify-center items-center gap-[5px] w-8 h-8"
-              onClick={() => setMobileNavOpen(true)}
-              aria-label="Open menu"
-            >
-              <span className="block w-5 h-[1.5px] bg-[#1D2939] rounded-full" />
-              <span className="block w-5 h-[1.5px] bg-[#1D2939] rounded-full" />
-              <span className="block w-5 h-[1.5px] bg-[#1D2939] rounded-full" />
-            </button>
+            {/* Mobile: User Avatar + Hamburger */}
+            <div className="xl:hidden flex items-center gap-3">
+              {user && (
+                <div ref={mobileUserMenuRef}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="w-9 h-9 md:w-11 md:h-11 rounded-full border border-gray-200 overflow-hidden hover:border-[#FFC700] transition-all"
+                  >
+                    {user.profile ? (
+                      <img
+                        src={user.profile}
+                        alt={user.full_name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-[#F2F4F7] flex items-center justify-center text-[#1D2939] text-sm font-bold">
+                        {user.full_name.charAt(0)}
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Mobile User Menu Dropdown */}
+                  {showUserMenu && (
+                    <div className="absolute right-4 top-16 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 xl:hidden">
+                      <div className="px-4 py-3 border-b border-gray-50">
+                        <p className="text-sm font-bold text-[#1D2939] truncate">
+                          {user.full_name}
+                        </p>
+                        <p className="text-xs text-[#667085] truncate">
+                          {user.email}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          handleLogout();
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors font-medium"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+              <button
+                className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                onClick={() => setMobileNavOpen(true)}
+                aria-label="Open menu"
+              >
+                <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 20 20" fill="none" stroke="#1D2939" strokeWidth="1.8" strokeLinecap="round">
+                  <line x1="3" y1="5" x2="17" y2="5" />
+                  <line x1="3" y1="10" x2="17" y2="10" />
+                  <line x1="3" y1="15" x2="13" y2="15" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Mobile Menu Overlay - Full Screen */}
       {mobileNavOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden bg-white flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-[60] xl:hidden bg-white flex flex-col overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-gray-100">
             <a
@@ -595,11 +643,11 @@ export default function Index() {
             </div>
           ) : (
             <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-6">
-              <p className="text-white text-[14px] md:text-[20px] font-normal font-satoshi text-center md:text-left whitespace-nowrap">
+              <p className="text-white text-[14px] md:text-[20px] font-normal font-satoshi text-center md:text-left md:whitespace-nowrap shrink-0">
                 We Would Love To Hear From You.
               </p>
               <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto">
-                <div className="flex flex-col flex-1 md:w-[400px] min-w-0">
+                <div className="flex flex-col flex-1 md:flex-1 md:min-w-0">
                   <div className="relative">
                     <span className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2">
                       <svg
@@ -668,7 +716,7 @@ export default function Index() {
             />
             <img
               src="/2ndillustration.png"
-              className="absolute top-[75%] left-[5%] sm:top-[60%] sm:left-[1%] w-16 h-16 sm:w-20 sm:h-20 md:w-32 md:h-32 object-contain opacity-100 sm:opacity-100"
+              className="absolute top-[77%] left-[5%] sm:top-[60%] sm:left-[1%] w-16 h-16 sm:w-20 sm:h-20 md:w-32 md:h-32 object-contain opacity-100 sm:opacity-100"
               alt=""
             />
             <img
@@ -708,7 +756,7 @@ export default function Index() {
           </div>
 
           {/* Hero Content */}
-          <h1 className="text-[28px] sm:text-[36px] md:text-[68px] font-bold text-[#1D2939] leading-[1.15] mb-4 md:mb-6 max-w-[950px] mx-auto font-satoshi">
+          <h1 className="text-[36px] sm:text-[36px] md:text-[68px] font-bold text-[#1D2939] leading-[1.15] mb-4 md:mb-6 max-w-[950px] mx-auto font-satoshi">
             Turn Group Chats <br /> Into Actual Plans
           </h1>
           <p className="text-[#667085] text-base sm:text-lg md:text-[22px] mb-8 md:mb-12 max-w-[500px] sm:max-w-[700px] mx-auto font-normal leading-relaxed px-6 sm:px-2">
@@ -782,22 +830,21 @@ export default function Index() {
                 <div className="space-y-6">
                   <p className="text-[#5A5A59] text-base md:text-lg leading-relaxed font-satoshi font-normal">
                     Planlark was created to solve a simple but frustrating
-                    problem: <br /> making plans with friends often goes
-                    nowhere.
+                    problem: making plans with friends often goes nowhere.
                   </p>
                   <div className="border-t border-gray-200" />
 
                   <p className="text-[#5A5A59] text-base md:text-lg leading-relaxed font-satoshi font-normal">
                     Group chats drag on. Options pile up. People hesitate and
-                    delay. In the <br /> end, nothing gets decided and plans
-                    fall apart.
+                    delay. In the end, nothing gets decided and plans fall
+                    apart.
                   </p>
                   <div className="border-t border-gray-200" />
 
                   <p className="text-[#5A5A59] text-base md:text-lg leading-relaxed font-satoshi font-normal">
                     Planlark flips this by removing endless options. Instead, it
-                    promotes <br /> clear commitments with a single plan and a
-                    deadline to respond.
+                    promotes clear commitments with a single plan and a deadline
+                    to respond.
                   </p>
                   <div className="border-t border-gray-200" />
 
@@ -818,17 +865,17 @@ export default function Index() {
         className="relative"
         style={{ height: "250vh" }}
       >
-        <section className="bg-[#FDFCF6] py-16 lg:py-20 sticky top-0">
-          <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
+        <section className="bg-[#FDFCF6] py-8 md:py-12 lg:py-20 sticky top-0 min-h-screen flex flex-col justify-center overflow-hidden">
+          <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px] w-full">
             <div className="flex flex-col items-center">
               {/* 1. Section Header */}
-              <div className="text-center max-w-[800px] mb-10">
+              <div className="text-center max-w-[800px] mb-6 md:mb-10">
                 <div className="inline-flex px-4 py-1.5 rounded-full border border-[#2828271A] mb-2 bg-transparent">
                   <span className="text-[#28282799] text-sm font-medium">
                     How It Work
                   </span>
                 </div>
-                <h2 className="text-[28px] md:text-[44px] font-bold text-[#282827] leading-tight mb-4">
+                <h2 className="text-[28px] md:text-[44px] font-bold text-[#282827] leading-tight mb-3">
                   Plan Your Perfect Trip In Just{" "}
                   <br className="hidden md:block" /> 3 Easy Steps.
                 </h2>
@@ -841,22 +888,20 @@ export default function Index() {
               {/* 2. Steps Flow Container */}
               <div className="w-full max-w-[1200px]">
                 {/* Step Numbers with Dashed Line */}
-                <div className="relative flex justify-between items-center max-w-[900px] mx-auto mb-8">
-                  {/* Dashed Connecting Line */}
-                  <div className="absolute top-1/2 inset-x-16 h-px -z-0 bg-[repeating-linear-gradient(to_right,rgba(209,213,219,1)_0,rgba(209,213,219,1)_8px,transparent_8px,transparent_16px)]"></div>
-                  {/* Yellow progress overlay */}
+                <div className="relative flex justify-between items-center max-w-[300px] md:max-w-[900px] mx-auto mb-8 md:mb-12">
+                  <div className="absolute top-1/2 inset-x-8 md:inset-x-16 h-px -z-0 bg-[repeating-linear-gradient(to_right,rgba(209,213,219,1)_0,rgba(209,213,219,1)_8px,transparent_8px,transparent_16px)]"></div>
                   <div
-                    className="absolute top-1/2 left-16 h-[2px] -z-0 bg-[#FFC700] transition-all duration-500 rounded-full"
+                    className="absolute top-1/2 left-8 md:left-16 h-[2px] -z-0 bg-[#FFC700] transition-all duration-500 rounded-full"
                     style={{
                       width: `${activeStep * 50}%`,
-                      maxWidth: "calc(100% - 128px)",
+                      maxWidth: "calc(100% - 64px)",
                     }}
                   />
 
                   {[0, 1, 2].map((step) => (
                     <div
                       key={step}
-                      className={`relative z-10 w-12 h-12 rounded-full flex items-center justify-center text-lg font-bold border-4 border-[#FDFCF6] transition-all duration-500 ${
+                      className={`relative z-10 w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-base md:text-lg font-bold border-4 border-[#FDFCF6] transition-all duration-500 ${
                         activeStep === step
                           ? "bg-[#FFC700] text-black scale-110"
                           : "bg-[#F2F4F7] text-[#667085]"
@@ -867,89 +912,120 @@ export default function Index() {
                   ))}
                 </div>
 
-                {/* Steps Grid (Titles & Descriptions) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center mb-10">
-                  {[
+                {/* Steps Content */}
+                {(() => {
+                  const steps = [
                     {
                       title: "Creating A Clear Plan",
-                      desc: (
-                        <>
-                          Turn Your Travel Ideas Into A Real <br /> Plan,
-                          Instantly.
-                        </>
-                      ),
+                      desc: "Turn Your Travel Ideas Into A Real Plan, Instantly.",
+                      src: "/step1Img.png",
+                      alt: "Step 1",
                     },
                     {
                       title: "Sharing It With Friends",
-                      desc: (
-                        <>
-                          Send Your Plan To Friends Instantly <br /> And
-                          Collaborate In Real Time.
-                        </>
-                      ),
+                      desc: "Send Your Plan To Friends Instantly And Collaborate In Real Time.",
+                      src: "/Step2Img.png",
+                      alt: "Step 2",
                     },
                     {
                       title: "Get Responses",
-                      desc: (
-                        <>
-                          Connect, Collaborate, And Create <br /> Unforgettable
-                          Journeys.
-                        </>
-                      ),
-                    },
-                  ].map((step, index) => (
-                    <div
-                      key={index}
-                      className={`transition-opacity duration-500 ${activeStep === index ? "opacity-100" : "opacity-50"}`}
-                    >
-                      <h3 className="text-[20px] md:text-[22px] font-medium text-[#1D2939] mb-2">
-                        {step.title}
-                      </h3>
-                      <p className="text-[#667085] text-base md:text-lg">
-                        {step.desc}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Step Image Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {[
-                    {
-                      src: "/step1Img.png",
-                      alt: "Step 1",
-                      minH: "min-h-[320px]",
-                      imgClass: "max-w-full h-auto object-contain",
-                    },
-                    {
-                      src: "/Step2Img.png",
-                      alt: "Step 2",
-                      minH: "min-h-[180px]",
-                      imgClass: "max-w-full h-[260px] object-contain",
-                    },
-                    {
+                      desc: "Connect, Collaborate, And Create Unforgettable Journeys.",
                       src: "/Step3Img.png",
                       alt: "Step 3",
-                      minH: "min-h-[320px]",
-                      imgClass: "max-w-full h-auto object-contain",
                     },
-                  ].map((card, index) => (
-                    <div
-                      key={index}
-                      className={`rounded-[32px] border-2 p-6 flex items-center justify-center ${card.minH} transition-all duration-500 ${
-                        activeStep === index
-                          ? "border-[#FFC700] shadow-[0_10px_40px_-10px_rgba(255,199,0,0.3)] scale-[1.02]"
-                          : "border-gray-200 opacity-60"
-                      }`}
-                    >
-                      <img
-                        src={card.src}
-                        alt={card.alt}
-                        className={card.imgClass}
-                      />
-                    </div>
-                  ))}
-                </div>
+                  ];
+
+                  return (
+                    <>
+                      {/* Mobile View: Fixed clipping and updated indicators */}
+                      <div className="md:hidden flex flex-col items-center">
+                        <div className="text-center mb-6 h-20">
+                          <h3 className="text-[20px] font-semibold text-[#1D2939] mb-1">
+                            {steps[activeStep].title}
+                          </h3>
+                          <p className="text-[#667085] text-sm px-4">
+                            {steps[activeStep].desc}
+                          </p>
+                        </div>
+                        
+                        {/* Image Frame with Aspect Ratio to prevent cutting */}
+                        <div className="relative w-full max-w-[280px] aspect-[3/4] mb-8">
+                          {steps.map((step, index) => (
+                            <div
+                              key={index}
+                              className="absolute inset-0 transition-all duration-700 ease-in-out"
+                              style={{
+                                transform: `translateX(${(index - activeStep) * 105}%)`,
+                                opacity: activeStep === index ? 1 : 0,
+                                visibility: Math.abs(index - activeStep) > 1 ? 'hidden' : 'visible'
+                              }}
+                            >
+                              <div className="h-full w-full rounded-[32px] border-2 border-[#FFC700] bg-white shadow-[0_10px_40px_-10px_rgba(255,199,0,0.2)] p-5 flex items-center justify-center">
+                                <img
+                                  src={step.src}
+                                  alt={step.alt}
+                                  className="max-h-full max-w-full object-contain"
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Updated Dot indicators - Matching Image Style */}
+                        <div className="flex justify-center items-center gap-2">
+                          {steps.map((_, index) => (
+                            <div
+                              key={index}
+                              className={`transition-all duration-500 rounded-full ${
+                                activeStep === index
+                                  ? "w-8 h-2.5 bg-[#FFC700]" // Pill
+                                  : "w-2.5 h-2.5 bg-[#D1D5DB]" // Dot
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Desktop View (Unchanged Logic, Visual tweaks) */}
+                      <div className="hidden md:block">
+                        <div className="grid grid-cols-3 gap-8 text-center mb-10">
+                          {steps.map((step, index) => (
+                            <div
+                              key={index}
+                              className={`transition-opacity duration-500 ${activeStep === index ? "opacity-100" : "opacity-40"}`}
+                            >
+                              <h3 className="text-[22px] font-semibold text-[#1D2939] mb-2">
+                                {step.title}
+                              </h3>
+                              <p className="text-[#667085] text-lg">
+                                {step.desc}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-8 items-end">
+                          {steps.map((step, index) => (
+                            <div
+                              key={index}
+                              className={`rounded-[32px] border-2 p-6 flex items-center justify-center h-[350px] transition-all duration-700 ${
+                                activeStep === index
+                                  ? "border-[#FFC700] shadow-[0_20px_50px_-12px_rgba(255,199,0,0.25)] scale-105 bg-white"
+                                  : "border-gray-100 opacity-50 scale-95"
+                              }`}
+                            >
+                              <img
+                                src={step.src}
+                                alt={step.alt}
+                                className="max-h-full max-w-full object-contain"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -960,22 +1036,31 @@ export default function Index() {
       <section id="pricing" className="bg-[#FDFCF6] py-16 lg:py-24">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           {/* Top Content: Header & Rocket */}
-          <div className="flex flex-col lg:flex-row items-start justify-between gap-10 mb-14">
-            <div className="max-w-[600px]">
-              <div className="inline-flex px-4 py-1.5 rounded-full border border-[#2828271A] mb-4 bg-transparent">
-                <span className="text-[#28282799] text-sm font-medium">
-                  Pricing
-                </span>
+          <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-6 lg:gap-10 mb-14">
+            <div className="flex flex-row items-center gap-4 lg:flex-col lg:items-start lg:max-w-[600px]">
+              <div className="flex-1">
+                <div className="inline-flex px-4 py-1.5 rounded-full border border-[#2828271A] mb-4 bg-transparent">
+                  <span className="text-[#28282799] text-sm font-medium">
+                    Pricing
+                  </span>
+                </div>
+                <h2 className="text-[28px] md:text-[44px] font-bold text-[#282827] leading-[1.1] mb-4 font-satoshi">
+                  Flexible Pricing for Every Need
+                </h2>
+                <p className="text-[#667085] text-base md:text-lg max-w-[550px]">
+                  Planlark Makes Trip Planning Easy, Fast, And Enjoyable
+                  For Everyone.
+                </p>
               </div>
-              <h2 className="text-[30px] md:text-[48px] font-bold text-[#282827] leading-[1.1] mb-4 font-satoshi">
-                Flexible Pricing for <br /> Every Need
-              </h2>
-              <p className="text-[#667085] text-base md:text-lg max-w-[550px]">
-                Planlark Makes Trip Planning Easy, Fast, And Enjoyable <br />{" "}
-                For Everyone.
-              </p>
+              {/* Rocket - Mobile: beside text */}
+              <img
+                src="/pricingRocketImg.png"
+                alt="Rocket illustration"
+                className="w-[100px] h-auto object-contain flex-shrink-0 lg:hidden"
+              />
             </div>
 
+            {/* Rocket - Desktop */}
             <div className="hidden lg:block">
               <img
                 src="/pricingRocketImg.png"
@@ -988,16 +1073,16 @@ export default function Index() {
           {/* Pricing Cards Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1240px]">
             {/* 1. Free Plan Card */}
-            <div className="rounded-[32px] border border-gray-100 p-7 flex flex-col justify-between shadow-sm">
-              <div className="flex items-start">
+            <div className="rounded-[32px] border border-gray-100 p-6 md:p-7 flex flex-col justify-between shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-0">
                 {/* Price Column */}
-                <div className="flex-1 pr-8">
-                  <div className="inline-flex px-4 py-1.5 rounded-full border border-gray-100 mb-6">
+                <div className="sm:flex-1 sm:pr-8">
+                  <div className="inline-flex px-4 py-1.5 rounded-full border border-gray-100 mb-4 sm:mb-6">
                     <span className="text-sm font-medium text-[#1D2939]">
                       Free
                     </span>
                   </div>
-                  <div className="text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
+                  <div className="text-[36px] sm:text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
                     Free
                   </div>
                   <p className="text-[#667085] text-sm md:text-base">
@@ -1005,15 +1090,12 @@ export default function Index() {
                   </p>
                 </div>
 
-                {/* Vertical Divider */}
-                <div className="w-[1px] h-28 border-l border-dashed border-gray-300 mx-2 mt-10" />
-
                 {/* Benefits Column */}
-                <div className="flex-1 pl-8 pt-4">
+                <div className="sm:flex-1 sm:pl-8 pt-2 sm:pt-4">
                   <p className="text-[#1D2939] font-bold text-base md:text-lg mb-3">
                     Benefits:
                   </p>
-                  <ul className="space-y-4">
+                  <ul className="space-y-3 sm:space-y-4">
                     {[
                       "Create up to 5 plans",
                       "Create group with friends",
@@ -1029,7 +1111,7 @@ export default function Index() {
                           alt="check"
                           className="w-5 h-5 flex-shrink-0"
                         />
-                        <span className="text-xs md:text-sm">{item}</span>
+                        <span className="text-sm">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -1052,17 +1134,17 @@ export default function Index() {
             </div>
 
             {/* 2. Premium Plan Card */}
-            <div className="rounded-[32px] border-2 border-[#FFC700] p-7 flex flex-col justify-between shadow-[0_20px_50px_-15px_rgba(255,199,0,0.3)] relative">
-              <div className="flex items-start">
+            <div className="rounded-[32px] border-2 border-[#FFC700] p-6 md:p-7 flex flex-col justify-between shadow-[0_20px_50px_-15px_rgba(255,199,0,0.3)] relative">
+              <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-0">
                 {/* Price Column */}
-                <div className="flex-1 pr-8">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#FFC700] mb-6 bg-[#FFF9E5]">
+                <div className="sm:flex-1 sm:pr-8">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#FFC700] mb-4 sm:mb-6 bg-[#FFF9E5]">
                     <span className="text-sm font-medium text-[#1D2939]">
                       Premium
                     </span>
                     <img src="/crown.png" alt="crown" className="w-4 h-4" />
                   </div>
-                  <div className="text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
+                  <div className="text-[36px] sm:text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
                     $19.99
                   </div>
                   <p className="text-[#667085] text-sm md:text-base">
@@ -1070,15 +1152,12 @@ export default function Index() {
                   </p>
                 </div>
 
-                {/* Vertical Divider */}
-                <div className="w-[1px] h-28 border-l border-dashed border-gray-300 mx-2 mt-10" />
-
                 {/* Benefits Column */}
-                <div className="flex-1 pl-8 pt-4">
+                <div className="sm:flex-1 sm:pl-8 pt-2 sm:pt-4">
                   <p className="text-[#1D2939] font-bold text-base md:text-lg mb-3">
                     Benefits:
                   </p>
-                  <ul className="space-y-4">
+                  <ul className="space-y-3 sm:space-y-4">
                     {[
                       "Unlimited plans",
                       "Create group with friends",
@@ -1095,7 +1174,7 @@ export default function Index() {
                           alt="check"
                           className="w-5 h-5 flex-shrink-0"
                         />
-                        <span className="text-xs md:text-sm">{item}</span>
+                        <span className="text-sm">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -1122,17 +1201,17 @@ export default function Index() {
       <section id="faq" className="py-16 lg:py-24 bg-[#FDFCF6]">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
           {/* Header Row: Title + Illustration */}
-          <div className="flex flex-col lg:flex-row items-start justify-between gap-10 mb-12">
-            <div className="max-w-[900px]">
+          <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-6 lg:gap-10 mb-12">
+            <div className="max-w-[900px] text-center lg:text-left">
               <div className="inline-flex px-4 py-1.5 rounded-full border border-[#2828271A] mb-4 bg-transparent">
                 <span className="text-[#28282799] text-sm font-medium">
                   FAQ
                 </span>
               </div>
-              <h2 className="text-[30px] md:text-[48px] font-bold text-[#282827] leading-[1.1] mb-4 font-satoshi">
+              <h2 className="text-[28px] md:text-[48px] font-bold text-[#282827] leading-[1.1] mb-4 font-satoshi">
                 Frequently asked questions
               </h2>
-              <p className="text-[#667085] text-base md:text-lg max-w-[550px]">
+              <p className="text-[#667085] text-base md:text-lg max-w-[550px] mx-auto lg:mx-0">
                 Clear Answers To Help You Use Planlark With Confidence And Enjoy
                 Smooth, Stress-Free Tour Planning With Your Friends.
               </p>
@@ -1197,105 +1276,176 @@ export default function Index() {
       {/* Footer */}
       <footer className="bg-[#1D1D1D] pt-16 pb-10 lg:pt-[80px]">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
-          {/* Top Section */}
-          <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-16">
-            {/* Left: Logo & Nav Links */}
-            <div className="flex flex-col gap-10">
-              {/* Logo */}
-              <a
-                href="/"
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.href = "/";
-                }}
-                className="flex items-center gap-3 cursor-pointer"
-              >
-                <img
-                  src="/FooterLogo.png"
-                  alt="Planlark Logo"
-                  className="h-10 w-10 object-contain"
-                />
-                <span className="text-[24px] font-bold text-white font-satoshi">
-                  planlark
-                </span>
-              </a>
+          {/* Mobile Footer - centered vertical layout */}
+          <div className="flex flex-col items-center gap-8 lg:hidden mb-10">
+            {/* Logo */}
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                window.location.href = "/";
+              }}
+              className="flex items-center gap-3 cursor-pointer"
+            >
+              <img
+                src="/FooterLogo.png"
+                alt="Planlark Logo"
+                className="h-10 w-10 object-contain"
+              />
+              <span className="text-[24px] font-bold text-white font-satoshi">
+                planlark
+              </span>
+            </a>
 
-              {/* Navigation Links Row */}
-              <nav className="flex flex-wrap items-center gap-x-8 gap-y-4">
-                {["Home", "About", "How It Work", "Pricing", "FAQ"].map(
-                  (link) => (
-                    <a
-                      key={link}
-                      href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
-                      className="text-white/80 text-lg hover:text-white transition-colors"
-                    >
-                      {link}
-                    </a>
-                  ),
-                )}
-              </nav>
-            </div>
-
-            {/* Right: Download Section */}
-            <div className="flex flex-col items-start gap-6">
-              <h3 className="text-white text-xl font-bold">Download our app</h3>
-              <div className="flex flex-wrap gap-4">
-                {/* App Store Badge Style */}
-                <a href="#" className="hover:opacity-80 transition-opacity">
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
-                    alt="App Store"
-                    className="h-[50px] w-auto"
-                  />
-                </a>
-                {/* Play Store Badge Style */}
-                <a href="#" className="hover:opacity-80 transition-opacity">
-                  <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-                    alt="Google Play"
-                    className="h-[50px] w-auto"
-                  />
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Horizontal Divider Line */}
-          <div className="w-full h-[1px] bg-white/10 mb-8" />
-
-          {/* Bottom Section */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="text-white/60 text-lg font-normal">
-              © Sparkly Inc. All Rights Reserved.
-            </p>
-
-            {/* Social Media Icons - Exactly 4 as per Figma */}
+            {/* Social Media Icons */}
             <div className="flex items-center gap-4">
               {[
-                {
-                  icon: "facebook",
-                  path: "/facebookLogo.png",
-                },
-                {
-                  icon: "instagram",
-                  path: "/InstagramLogo.png",
-                },
+                { icon: "facebook", path: "/facebookLogo.png" },
+                { icon: "instagram", path: "/InstagramLogo.png" },
                 { icon: "tiktok", path: "/tiktokLogo.png" },
                 { icon: "x", path: "/twitterLogo.png" },
               ].map((social) => (
                 <a
                   key={social.icon}
                   href="#"
-                  className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+                  className="w-11 h-11 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
                 >
-                  <img
-                    width="20"
-                    height="20"
-                    src={social.path}
-                    alt={social.icon}
-                  />
+                  <img width="18" height="18" src={social.path} alt={social.icon} />
                 </a>
               ))}
+            </div>
+
+            {/* Nav Links - horizontal centered row */}
+            <nav className="flex flex-wrap justify-center items-center gap-x-6 gap-y-3">
+              {["Home", "About", "How It Work", "Pricing", "FAQ"].map(
+                (link) => (
+                  <a
+                    key={link}
+                    href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
+                    className="text-white/80 text-base hover:text-white transition-colors"
+                  >
+                    {link}
+                  </a>
+                ),
+              )}
+            </nav>
+
+            {/* Download Section */}
+            <div className="flex flex-col items-center gap-4">
+              <h3 className="text-white text-lg font-bold">Download our app</h3>
+              <div className="flex gap-3">
+                <a href="#" className="hover:opacity-80 transition-opacity">
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+                    alt="App Store"
+                    className="h-[44px] w-auto"
+                  />
+                </a>
+                <a href="#" className="hover:opacity-80 transition-opacity">
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                    alt="Google Play"
+                    className="h-[44px] w-auto"
+                  />
+                </a>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="w-full h-[1px] bg-white/10" />
+
+            {/* Copyright */}
+            <p className="text-white/60 text-sm font-normal">
+              © Sparkly Inc. All Rights Reserved.
+            </p>
+          </div>
+
+          {/* Desktop Footer - original layout */}
+          <div className="hidden lg:block">
+            {/* Top Section */}
+            <div className="flex flex-row justify-between items-start gap-12 mb-16">
+              {/* Left: Logo & Nav Links */}
+              <div className="flex flex-col gap-10">
+                <a
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.location.href = "/";
+                  }}
+                  className="flex items-center gap-3 cursor-pointer"
+                >
+                  <img
+                    src="/FooterLogo.png"
+                    alt="Planlark Logo"
+                    className="h-10 w-10 object-contain"
+                  />
+                  <span className="text-[24px] font-bold text-white font-satoshi">
+                    planlark
+                  </span>
+                </a>
+
+                <nav className="flex flex-wrap items-center gap-x-8 gap-y-4">
+                  {["Home", "About", "How It Work", "Pricing", "FAQ"].map(
+                    (link) => (
+                      <a
+                        key={link}
+                        href={`#${link.toLowerCase().replace(/\s+/g, "-")}`}
+                        className="text-white/80 text-lg hover:text-white transition-colors"
+                      >
+                        {link}
+                      </a>
+                    ),
+                  )}
+                </nav>
+              </div>
+
+              {/* Right: Download Section */}
+              <div className="flex flex-col items-start gap-6">
+                <h3 className="text-white text-xl font-bold">Download our app</h3>
+                <div className="flex flex-wrap gap-4">
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+                      alt="App Store"
+                      className="h-[50px] w-auto"
+                    />
+                  </a>
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                      alt="Google Play"
+                      className="h-[50px] w-auto"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Horizontal Divider Line */}
+            <div className="w-full h-[1px] bg-white/10 mb-8" />
+
+            {/* Bottom Section */}
+            <div className="flex flex-row items-center justify-between gap-6">
+              <p className="text-white/60 text-lg font-normal">
+                © Sparkly Inc. All Rights Reserved.
+              </p>
+
+              <div className="flex items-center gap-4">
+                {[
+                  { icon: "facebook", path: "/facebookLogo.png" },
+                  { icon: "instagram", path: "/InstagramLogo.png" },
+                  { icon: "tiktok", path: "/tiktokLogo.png" },
+                  { icon: "x", path: "/twitterLogo.png" },
+                ].map((social) => (
+                  <a
+                    key={social.icon}
+                    href="#"
+                    className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition-all"
+                  >
+                    <img width="20" height="20" src={social.path} alt={social.icon} />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>

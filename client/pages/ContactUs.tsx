@@ -1,7 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiFetch, getErrorMessage } from "@/lib/api";
 import Navbar from "@/components/Navbar";
+
+const subjectOptions = [
+  "General Question",
+  "Billing Support",
+  "Technical Issue",
+  "Partnership",
+];
 
 export default function ContactUs() {
   const [formData, setFormData] = useState({
@@ -14,7 +21,20 @@ export default function ContactUs() {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [showSubjectDropdown, setShowSubjectDropdown] = useState(false);
+  const subjectDropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+
+  // Close subject dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (subjectDropdownRef.current && !subjectDropdownRef.current.contains(e.target as Node)) {
+        setShowSubjectDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -100,9 +120,9 @@ export default function ContactUs() {
       <Navbar />
 
       {/* Main Content Area */}
-      <main className="flex-grow flex flex-col items-center pt-16 pb-24 px-4 relative z-10">
+      <main className="flex-grow flex flex-col items-center pt-8 md:pt-16 pb-12 md:pb-24 px-4 relative z-10">
         {/* Header Section */}
-        <div className="text-center mb-12 flex flex-col items-center">
+        <div className="text-center mb-6 md:mb-12 flex flex-col items-center">
           {/* Small Pill Badge */}
           <div className="inline-flex items-center justify-center px-5 py-1.5 border border-[#2828271A] rounded-full mb-2">
             <span className="text-[13px] font-medium text-[#28282799]">
@@ -110,22 +130,22 @@ export default function ContactUs() {
             </span>
           </div>
 
-          <h1 className="text-[40px] md:text-[54px] font-bold text-[#1D2939] mb-2 tracking-tight">
+          <h1 className="text-[28px] md:text-[54px] font-bold text-[#1D2939] mb-2 tracking-tight">
             Have A Question?
           </h1>
 
-          <p className="text-[17px] text-[#667085] max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm md:text-[17px] text-[#667085] max-w-xl mx-auto leading-relaxed">
             We're Here To Help. Send Us A Message And We'll Get Back To You
             Soon.
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="w-full max-w-[700px] bg-white rounded-[32px] sm:rounded-[40px] p-8 sm:p-12 lg:p-[56px] border border-gray-100 shadow-[0_10px_60px_rgba(0,0,0,0.04)]">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="w-full max-w-[700px] bg-white rounded-[24px] sm:rounded-[40px] p-6 sm:p-12 lg:p-[56px] border border-gray-100 shadow-[0_10px_60px_rgba(0,0,0,0.04)]">
+          <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
             {/* Full Name */}
             <div>
-              <label className="block text-[15px] font-medium text-[#1D2939] mb-2">
+              <label className="block text-sm md:text-[15px] font-medium text-[#1D2939] mb-2">
                 Full Name
               </label>
               <input
@@ -134,7 +154,7 @@ export default function ContactUs() {
                 value={formData.fullName}
                 onChange={handleChange}
                 placeholder="John doe"
-                className={`w-full h-[52px] border ${fieldErrors.fullName ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white`}
+                className={`w-full h-[48px] md:h-[52px] border ${fieldErrors.fullName ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-sm md:text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white`}
               />
               {fieldErrors.fullName && (
                 <p className="text-sm text-red-500 mt-1">{fieldErrors.fullName}</p>
@@ -143,7 +163,7 @@ export default function ContactUs() {
 
             {/* Email Address */}
             <div>
-              <label className="block text-[15px] font-medium text-[#1D2939] mb-2">
+              <label className="block text-sm md:text-[15px] font-medium text-[#1D2939] mb-2">
                 Email Address
               </label>
               <input
@@ -152,7 +172,7 @@ export default function ContactUs() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="johndoe@gmail.com"
-                className={`w-full h-[52px] border ${fieldErrors.email ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white`}
+                className={`w-full h-[48px] md:h-[52px] border ${fieldErrors.email ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-sm md:text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white`}
               />
               {fieldErrors.email && (
                 <p className="text-sm text-red-500 mt-1">{fieldErrors.email}</p>
@@ -161,45 +181,53 @@ export default function ContactUs() {
 
             {/* Subject Dropdown */}
             <div>
-              <label className="block text-[15px] font-medium text-[#1D2939] mb-2">
+              <label className="block text-sm md:text-[15px] font-medium text-[#1D2939] mb-2">
                 Subject
               </label>
-              <div className="relative">
-                <select
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full h-[52px] border border-gray-200 rounded-xl px-4 text-base text-[#667085] focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white appearance-none cursor-pointer"
+              <div className="relative" ref={subjectDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setShowSubjectDropdown(!showSubjectDropdown)}
+                  className={`w-full h-[48px] md:h-[52px] border ${showSubjectDropdown ? "border-[#FFC700] ring-1 ring-[#FFC700]/50" : "border-gray-200"} rounded-xl px-4 text-sm md:text-base text-[#667085] bg-white flex items-center justify-between cursor-pointer transition-all`}
                 >
-                  <option value="General Question">General Question</option>
-                  <option value="Billing Support">Billing Support</option>
-                  <option value="Technical Issue">Technical Issue</option>
-                  <option value="Partnership">Partnership</option>
-                </select>
-                {/* Custom Dropdown Arrow */}
-                <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                  <span>{formData.subject}</span>
                   <svg
-                    width="14"
-                    height="8"
-                    viewBox="0 0 14 8"
+                    className={`w-3.5 h-3.5 text-gray-400 transition-transform ${showSubjectDropdown ? "rotate-180" : ""}`}
                     fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    <path
-                      d="M1 1L7 7L13 1"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
-                </div>
+                </button>
+
+                {showSubjectDropdown && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                    {subjectOptions.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => {
+                          setFormData({ ...formData, subject: option });
+                          setShowSubjectDropdown(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 text-sm md:text-base transition-colors ${
+                          formData.subject === option
+                            ? "bg-[#FFF8E1] text-[#1D2939] font-medium"
+                            : "text-[#667085] hover:bg-gray-50"
+                        }`}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Message Textarea */}
             <div>
-              <label className="block text-[15px] font-medium text-[#1D2939] mb-2">
+              <label className="block text-sm md:text-[15px] font-medium text-[#1D2939] mb-2">
                 Message
               </label>
               <textarea
@@ -207,7 +235,7 @@ export default function ContactUs() {
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Write your message..."
-                className={`w-full min-h-[140px] border ${fieldErrors.message ? "border-red-400" : "border-gray-200"} rounded-xl p-4 text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white resize-none`}
+                className={`w-full min-h-[120px] md:min-h-[140px] border ${fieldErrors.message ? "border-red-400" : "border-gray-200"} rounded-xl p-4 text-sm md:text-base text-[#1D2939] placeholder:text-gray-400 focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700]/50 transition-all bg-white resize-none`}
               ></textarea>
               {fieldErrors.message && (
                 <p className="text-sm text-red-500 mt-1">{fieldErrors.message}</p>
@@ -230,7 +258,7 @@ export default function ContactUs() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full h-[52px] mt-4 bg-[#FFC700] hover:bg-[#E6B400] disabled:bg-[#FFE380] disabled:cursor-not-allowed rounded-full text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-sm"
+              className="w-full h-[48px] md:h-[52px] mt-2 md:mt-4 bg-[#FFC700] hover:bg-[#E6B400] disabled:bg-[#FFE380] disabled:cursor-not-allowed rounded-full text-[15px] md:text-[17px] font-bold text-[#1D2939] transition-all transform active:scale-[0.98] shadow-sm"
             >
               {isSubmitting ? "Sending..." : "Send Message"}
             </button>

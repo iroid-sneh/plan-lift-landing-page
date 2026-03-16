@@ -173,9 +173,9 @@ export default function Verification() {
   return (
     <div className="min-h-screen bg-[#FFFDF7] flex flex-col relative overflow-hidden font-satoshi">
       <Navbar hideAuthButtons />
-      <main className="flex-1 flex items-center justify-center p-4 md:p-10 w-full relative z-10">
-        {/* Background Decorative Dashed Circles */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <main className="flex-1 flex items-center justify-center px-4 py-4 md:p-10 w-full relative z-10">
+        {/* Background Decorative Dashed Circles - hidden on small mobile */}
+        <div className="absolute inset-0 hidden sm:flex items-center justify-center pointer-events-none">
           <div className="relative w-[1000px] h-[1000px]">
             <div className="absolute inset-0 rounded-full border border-dashed border-gray-300" />
             <div className="absolute inset-[120px] rounded-full border border-dashed border-gray-300" />
@@ -183,25 +183,24 @@ export default function Verification() {
         </div>
 
         {/* Main Card */}
-        <div className="w-full max-w-[1240px] bg-white rounded-[40px] border border-gray-100 shadow-[0_10px_50px_rgba(0,0,0,0.05)] overflow-hidden relative z-10">
-          <div className="flex flex-col lg:flex-row min-h-[650px]">
+        <div className="w-full max-w-[1240px] bg-white rounded-[20px] md:rounded-[40px] border border-gray-100 shadow-[0_10px_50px_rgba(0,0,0,0.05)] overflow-hidden relative z-10">
+          <div className="flex flex-col lg:flex-row lg:min-h-[650px]">
             {/* Left Side - Form Container */}
-            <div className="w-full lg:w-[45%] p-8 md:p-16 lg:pl-20 lg:pr-10 flex flex-col justify-center">
-              {/* Logo - Removed shadow box wrapper for a cleaner look */}
-              <div className="mb-8">
+            <div className="w-full lg:w-[45%] px-5 py-5 md:p-16 lg:pl-20 lg:pr-10 flex flex-col justify-center">
+              {/* Logo */}
+              <div className="mb-3 sm:mb-5 md:mb-8">
                 <img
                   src="/logo.png"
                   alt="Planlift Logo"
-                  className="w-[84px] h-[84px] object-contain rounded-[20px]"
+                  className="w-[48px] h-[48px] sm:w-[64px] sm:h-[64px] md:w-[84px] md:h-[84px] object-contain rounded-[12px] sm:rounded-[16px] md:rounded-[20px]"
                 />
               </div>
 
               {/* Typography */}
-              <h1 className="text-[32px] sm:text-[36px] font-bold text-[#1D2939] mb-2 tracking-tight">
+              <h1 className="text-[22px] sm:text-[36px] font-bold text-[#1D2939] mb-1 sm:mb-2 tracking-tight">
                 Enter Verification Code
               </h1>
-              {/* Removed max-w to prevent the phone number from wrapping unnecesarily */}
-              <p className="text-[15px] sm:text-[16px] text-[#667085] mb-10">
+              <p className="text-xs sm:text-[16px] text-[#667085] mb-4 sm:mb-6 md:mb-10">
                 We've sent a 6-digit code to{" "}
                 <span className="text-[#1D2939] font-semibold">
                   {pending
@@ -210,15 +209,15 @@ export default function Verification() {
                 </span>
               </p>
 
-              {/* Form Area - Fixed max width to align elements nicely */}
-              <div className="w-full max-w-[380px]">
+              {/* Form Area */}
+              <div className="w-full md:max-w-[380px]">
                 {/* Label */}
-                <label className="block text-[14px] font-medium text-[#344054] mb-3">
+                <label className="block text-xs sm:text-[14px] font-medium text-[#344054] mb-2 sm:mb-3">
                   Enter the Code<span className="text-red-500 ml-1">*</span>
                 </label>
 
-                {/* OTP Inputs */}
-                <div className="flex justify-between gap-2 sm:gap-3">
+                {/* OTP Inputs - flex to fill available width */}
+                <div className="flex justify-between gap-1.5 sm:gap-3">
                   {code.map((digit, index) => (
                     <input
                       key={index}
@@ -228,17 +227,17 @@ export default function Verification() {
                       value={digit}
                       onChange={(e) => handleChange(index, e.target.value)}
                       onKeyDown={(e) => handleKeyDown(index, e)}
-                      className="w-[48px] h-[48px] sm:w-[54px] sm:h-[54px] text-center text-[22px] font-semibold border border-[#D0D5DD] rounded-[12px] bg-white text-[#1D2939] focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700] transition-all shadow-sm"
+                      className="flex-1 min-w-0 aspect-square max-w-[54px] text-center text-[18px] sm:text-[22px] font-semibold border border-[#D0D5DD] rounded-[8px] sm:rounded-[12px] bg-white text-[#1D2939] focus:outline-none focus:border-[#FFC700] focus:ring-1 focus:ring-[#FFC700] transition-all shadow-sm"
                     />
                   ))}
                 </div>
 
-                {/* Resend Code - Centered horizontally */}
-                <div className="flex items-center justify-center gap-1 mt-6 mb-8">
+                {/* Resend Code */}
+                <div className="flex items-center justify-center gap-1 mt-3 sm:mt-6 mb-4 sm:mb-8">
                   <button
                     onClick={handleResend}
                     disabled={timer > 0 || isResending}
-                    className={`text-[14px] ${timer > 0 || isResending
+                    className={`text-xs sm:text-[14px] ${timer > 0 || isResending
                       ? "text-[#667085] cursor-not-allowed"
                       : "text-[#1D2939] font-medium hover:underline"
                       }`}
@@ -246,21 +245,21 @@ export default function Verification() {
                     {isResending ? "Resending..." : "Resend Code"}
                   </button>
                   {timer > 0 && (
-                    <span className="text-[14px] font-semibold text-[#1D2939]">
+                    <span className="text-xs sm:text-[14px] font-semibold text-[#1D2939]">
                       {formatTime(timer)}
                     </span>
                   )}
                 </div>
 
                 {error && (
-                  <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+                  <p className="text-red-500 text-xs sm:text-sm mb-3 text-center">{error}</p>
                 )}
 
-                {/* Verify Button - Removed shadow, tweaked hover color */}
+                {/* Verify Button */}
                 <button
                   onClick={handleVerify}
                   disabled={code.some((d) => !d) || isVerifying}
-                  className="w-full h-[52px] bg-[#FFC700] hover:bg-[#F2BD00] disabled:bg-[#FFC700]/60 disabled:cursor-not-allowed rounded-full text-[16px] font-bold text-[#1D2939] transition-all active:scale-[0.98]"
+                  className="w-full h-[44px] sm:h-[48px] md:h-[52px] bg-[#FFC700] hover:bg-[#F2BD00] disabled:bg-[#FFC700]/60 disabled:cursor-not-allowed rounded-full text-sm sm:text-[15px] md:text-[16px] font-bold text-[#1D2939] transition-all active:scale-[0.98]"
                 >
                   {isVerifying ? "Verifying..." : "Verify & Continue"}
                 </button>
