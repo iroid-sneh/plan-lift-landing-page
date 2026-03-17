@@ -36,7 +36,12 @@ export default function Index() {
           setLocalSubscription(res.data.subscription);
         }
         if (res.data?.user) {
-          setUser(res.data.user);
+          // Preserve needs_onboarding from cached user if API doesn't return it
+          const updatedUser = {
+            ...res.data.user,
+            needs_onboarding: res.data.user.needs_onboarding ?? user.needs_onboarding,
+          };
+          setUser(updatedUser);
         }
       } catch {
         // Use cached data on failure
@@ -196,9 +201,16 @@ export default function Index() {
 
   const baseRevCatUrl = import.meta.env.VITE_REVNUECAT_BASE_URL;
 
+  const needsOnboarding = user?.needs_onboarding === true || (user && !user.full_name);
+
   const handlePremiumPlanClick = () => {
     if (!user) {
       navigate("/create-account");
+      return;
+    }
+
+    if (needsOnboarding) {
+      navigate("/complete-profile");
       return;
     }
 
@@ -412,6 +424,14 @@ export default function Index() {
               </button>
 
               {user ? (
+                needsOnboarding ? (
+                  <button
+                    onClick={() => navigate("/complete-profile")}
+                    className="px-8 py-3 border border-[#1D2939] rounded-full text-[#1D2939] text-lg font-bold hover:bg-gray-50 transition-colors"
+                  >
+                    Complete Profile
+                  </button>
+                ) : (
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
@@ -425,7 +445,7 @@ export default function Index() {
                       />
                     ) : (
                       <div className="w-full h-full bg-[#F2F4F7] flex items-center justify-center text-[#1D2939] font-bold">
-                        {user.full_name.charAt(0)}
+                        {user.full_name?.charAt(0) ?? ""}
                       </div>
                     )}
                   </button>
@@ -449,6 +469,7 @@ export default function Index() {
                     </div>
                   )}
                 </div>
+                )
               ) : (
                 <button
                   onClick={() => navigate("/create-account")}
@@ -462,6 +483,14 @@ export default function Index() {
             {/* Mobile: User Avatar + Hamburger */}
             <div className="xl:hidden flex items-center gap-3">
               {user && (
+                needsOnboarding ? (
+                  <button
+                    onClick={() => navigate("/complete-profile")}
+                    className="px-4 py-2 border border-[#1D2939] rounded-full text-[#1D2939] text-sm font-bold hover:bg-gray-50 transition-colors"
+                  >
+                    Complete Profile
+                  </button>
+                ) : (
                 <div ref={mobileUserMenuRef}>
                   <button
                     onClick={() => setShowUserMenu(!showUserMenu)}
@@ -475,7 +504,7 @@ export default function Index() {
                       />
                     ) : (
                       <div className="w-full h-full bg-[#F2F4F7] flex items-center justify-center text-[#1D2939] text-sm font-bold">
-                        {user.full_name.charAt(0)}
+                        {user.full_name?.charAt(0) ?? ""}
                       </div>
                     )}
                   </button>
@@ -503,6 +532,7 @@ export default function Index() {
                     </div>
                   )}
                 </div>
+                )
               )}
               <button
                 className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
@@ -1119,17 +1149,17 @@ export default function Index() {
               </div>
 
               <button
-                onClick={!user ? () => navigate("/create-account") : undefined}
-                disabled={user ? isPremiumActive || isFreePlan : false}
+                onClick={!user ? () => navigate("/create-account") : needsOnboarding ? () => navigate("/complete-profile") : undefined}
+                disabled={user && !needsOnboarding ? isPremiumActive || isFreePlan : false}
                 className={`w-full mt-8 py-3 rounded-full text-base md:text-lg font-bold transition-colors ${
-                  user && isPremiumActive
+                  user && !needsOnboarding && isPremiumActive
                     ? "bg-[#F2F4F7] text-[#98A2B3] cursor-not-allowed"
-                    : user && isFreePlan
+                    : user && !needsOnboarding && isFreePlan
                       ? "bg-[#F2F4F7] text-[#1D2939] cursor-default"
                       : "bg-[#F2F4F7] text-[#1D2939] hover:bg-gray-200"
                 }`}
               >
-                {user && isFreePlan ? "Selected Plan" : "Select Plan"}
+                {user && !needsOnboarding && isFreePlan ? "Selected Plan" : "Select Plan"}
               </button>
             </div>
 

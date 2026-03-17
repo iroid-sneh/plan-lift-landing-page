@@ -17,6 +17,7 @@ export type UserProfile = {
   country_code: string;
   phone_number: string;
   profile?: string;
+  needs_onboarding?: boolean;
   // and other fields returned by api...
 };
 

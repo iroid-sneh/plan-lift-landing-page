@@ -92,7 +92,7 @@ export default function CompleteProfile() {
         body,
       });
 
-      setUser(res.data);
+      setUser({ ...res.data, needs_onboarding: false });
       clearVerifiedUser();
       navigate("/", { replace: true });
     } catch (e) {
