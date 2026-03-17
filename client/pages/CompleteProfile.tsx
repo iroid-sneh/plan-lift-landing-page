@@ -128,7 +128,7 @@ export default function CompleteProfile() {
               <div className="w-full max-w-[400px]">
                 {/* Avatar Upload UI */}
                 <div
-                  className="relative w-[72px] h-[72px] sm:w-[86px] sm:h-[86px] md:w-[88px] md:h-[88px] mb-3 sm:mb-5 md:mb-8 mx-auto group cursor-pointer"
+                  className="relative w-[86px] h-[86px] sm:w-[86px] sm:h-[86px] md:w-[88px] md:h-[88px] mb-3 sm:mb-5 md:mb-8 mx-auto group cursor-pointer"
                   onClick={triggerFileInput}
                 >
                   <input
@@ -246,7 +246,7 @@ export default function CompleteProfile() {
 
             {/* Right Side - Illustration Container (hidden on mobile) */}
             <div className="hidden lg:flex w-full lg:w-[55%] bg-white items-center justify-center">
-              <div className="relative w-full h-full flex items-end justify-center p-6">
+              <div className="relative w-full h-full flex items-end justify-center p-0">
                 <img
                   src="/CompleteProfileImg.png"
                   alt="Profile Setup Illustration"
