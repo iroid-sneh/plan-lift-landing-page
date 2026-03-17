@@ -703,7 +703,7 @@ export default function Index() {
                       value={subscriberEmail}
                       onChange={(e) => setSubscriberEmail(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && handleSubscribe()}
-                      className={`w-full pl-10 md:pl-14 pr-4 md:pr-6 py-2.5 md:py-3.5 rounded-full border transition-all duration-500 ${isHighlighted ? "animate-highlight" : ""} ${subscribeStatus === "error" ? "border-red-500" : "border-white/20"} bg-transparent text-white placeholder:text-white/60 text-sm md:text-lg focus:outline-none focus:border-white/50`}
+                      className={`w-full pl-10 md:pl-12 pr-4 md:pr-16 py-2.5 md:py-3.5 rounded-full border transition-all duration-500 ${isHighlighted ? "animate-highlight" : ""} ${subscribeStatus === "error" ? "border-red-500" : "border-white/20"} bg-transparent text-white placeholder:text-white/60 text-sm md:text-lg focus:outline-none focus:border-white/50`}
                     />
                   </div>
                   {subscribeStatus === "error" && (
