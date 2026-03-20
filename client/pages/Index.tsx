@@ -57,6 +57,8 @@ export default function Index() {
     (!subscription?.expiryDate ||
       new Date(subscription.expiryDate) > new Date());
   const isFreePlan = !subscription || subscription.tier === "free";
+  const isMonthlyPlan = isPremiumActive && subscription?.type === 2;
+  const isYearlyPlan = isPremiumActive && subscription?.type === 3;
 
   // Reference for the email input to allow scrolling and focusing
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -200,6 +202,7 @@ export default function Index() {
   };
 
   const baseRevCatUrl = import.meta.env.VITE_REVNUECAT_BASE_URL;
+  const monthlyRevCatUrl = import.meta.env.VITE_REVNUECAT_MONTHLY_BASE_URL;
 
   const needsOnboarding = user?.needs_onboarding === true || (user && !user.full_name);
 
@@ -215,6 +218,21 @@ export default function Index() {
     }
 
     const url = `${baseRevCatUrl}/${user.id}`;
+    window.location.href = url;
+  };
+
+  const handleMonthlyPlanClick = () => {
+    if (!user) {
+      navigate("/create-account");
+      return;
+    }
+
+    if (needsOnboarding) {
+      navigate("/complete-profile");
+      return;
+    }
+
+    const url = `${monthlyRevCatUrl}/${user.id}`;
     window.location.href = url;
   };
 
@@ -1159,7 +1177,7 @@ export default function Index() {
                       : "bg-[#F2F4F7] text-[#1D2939] hover:bg-gray-200"
                 }`}
               >
-                {user && !needsOnboarding && isFreePlan ? "Selected Plan" : "Select Plan"}
+                {user && !needsOnboarding && (isFreePlan || subscription?.type === 1) ? "Selected Plan" : "Select Plan"}
               </button>
             </div>
 
@@ -1212,15 +1230,15 @@ export default function Index() {
               </div>
 
               <button
-                onClick={isPremiumActive ? undefined : handlePremiumPlanClick}
-                disabled={isPremiumActive}
+                onClick={isMonthlyPlan ? undefined : handleMonthlyPlanClick}
+                disabled={isMonthlyPlan}
                 className={`w-full mt-8 py-3 rounded-full text-base md:text-lg font-bold transition-colors flex items-center justify-center gap-2 ${
-                  isPremiumActive
+                  isMonthlyPlan
                     ? "bg-[#FFC700]/60 text-black/50 cursor-default"
                     : "bg-[#FFC700] text-black hover:bg-[#E6B400]"
                 }`}
               >
-                {isPremiumActive ? "Selected Plan" : "Select Plan"}
+                {isMonthlyPlan ? "Selected Plan" : "Select Plan"}
               </button>
             </div>
 
@@ -1273,15 +1291,15 @@ export default function Index() {
               </div>
 
               <button
-                onClick={isPremiumActive ? undefined : handlePremiumPlanClick}
-                disabled={isPremiumActive}
+                onClick={isYearlyPlan ? undefined : handlePremiumPlanClick}
+                disabled={isYearlyPlan}
                 className={`w-full mt-8 py-3 rounded-full text-base md:text-lg font-bold transition-colors flex items-center justify-center gap-2 ${
-                  isPremiumActive
+                  isYearlyPlan
                     ? "bg-[#FFC700]/60 text-black/50 cursor-default"
                     : "bg-[#FFC700] text-black hover:bg-[#E6B400]"
                 }`}
               >
-                {isPremiumActive ? "Selected Plan" : "Select Plan"}
+                {isYearlyPlan ? "Selected Plan" : "Select Plan"}
               </button>
             </div>
           </div>

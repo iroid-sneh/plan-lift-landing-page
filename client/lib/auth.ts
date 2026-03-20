@@ -22,6 +22,7 @@ export type UserProfile = {
 };
 
 export type Subscription = {
+  type: number;
   tier: "free" | "premium";
   isActive: boolean;
   expiryDate: string | null;
