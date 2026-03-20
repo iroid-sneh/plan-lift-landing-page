@@ -370,7 +370,7 @@ export default function Index() {
 
       {/* 1. NAVBAR */}
       <header className="bg-[#FDFCF6] sticky top-0 z-50 border-b border-gray-100 relative">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] py-3 md:py-6">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[100px] py-3 md:py-6">
           <div className="flex items-center justify-between">
             {/* Logo - Fixed Path */}
             <a
@@ -664,7 +664,7 @@ export default function Index() {
 
       {/* 2. EMAIL / NEWSLETTER ROW */}
       <div className="bg-[#282827] py-3 md:py-4">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-[100px] w-full">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-[100px] w-full">
           {subscribeStatus === "success" ? (
             <div className="flex justify-center items-center py-1">
               <p className="text-[#FFC700] text-base md:text-xl font-bold animate-pulse text-center">
@@ -762,7 +762,7 @@ export default function Index() {
           </div>
         </div>
 
-        <div className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 text-center">
+        <div className="relative z-10 max-w-[1600px] mx-auto px-4 sm:px-6 text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-gray-200 bg-white/80 backdrop-blur-sm mb-6 md:mb-8">
             <div className="flex items-center -space-x-2">
@@ -830,7 +830,7 @@ export default function Index() {
 
       {/* About Section - Your Smarter Way To Plan Together */}
       <section id="about" className="bg-[#FDFCF6] py-14 lg:py-8">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-[100px]">
           <div className="flex flex-col items-center">
             {/* 1. Section Header (Reduced bottom margin to close the gap) */}
             <div className="text-center mb-4 md:mb-5">
@@ -896,7 +896,7 @@ export default function Index() {
         style={{ height: "250vh" }}
       >
         <section className="bg-[#FDFCF6] py-8 md:py-12 lg:py-20 sticky top-0 min-h-screen flex flex-col justify-center overflow-hidden">
-          <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px] w-full">
+          <div className="max-w-[1600px] mx-auto px-6 lg:px-[100px] w-full">
             <div className="flex flex-col items-center">
               {/* 1. Section Header */}
               <div className="text-center max-w-[800px] mb-6 md:mb-10">
@@ -916,7 +916,7 @@ export default function Index() {
               </div>
 
               {/* 2. Steps Flow Container */}
-              <div className="w-full max-w-[1200px]">
+              <div className="w-full max-w-[1600px]">
                 {/* Step Numbers with Dashed Line */}
                 <div className="relative flex justify-between items-center max-w-[300px] md:max-w-[900px] mx-auto mb-8 md:mb-12">
                   <div className="absolute top-1/2 inset-x-8 md:inset-x-16 h-px -z-0 bg-[repeating-linear-gradient(to_right,rgba(209,213,219,1)_0,rgba(209,213,219,1)_8px,transparent_8px,transparent_16px)]"></div>
@@ -1064,7 +1064,7 @@ export default function Index() {
 
       {/* Pricing Section */}
       <section id="pricing" className="bg-[#FDFCF6] py-16 lg:py-24">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-[100px]">
           {/* Top Content: Header & Rocket */}
           <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-6 lg:gap-10 mb-14">
             <div className="flex flex-row items-center gap-4 lg:flex-col lg:items-start lg:max-w-[600px]">
@@ -1101,12 +1101,12 @@ export default function Index() {
           </div>
 
           {/* Pricing Cards Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-[1240px]">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 xl:gap-8 max-w-[1600px]">
             {/* 1. Free Plan Card */}
-            <div className="rounded-[32px] border border-gray-100 p-6 md:p-7 flex flex-col justify-between shadow-sm">
-              <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-0">
+            <div className="rounded-[32px] bg-white border border-gray-100 p-6 md:p-7 flex flex-col justify-between shadow-[0px_20px_50px_rgba(0,0,0,0.05)] ">
+              <div className="flex flex-row items-start gap-0">
                 {/* Price Column */}
-                <div className="sm:flex-1 sm:pr-8">
+                <div className="flex-1">
                   <div className="inline-flex px-4 py-1.5 rounded-full border border-gray-100 mb-4 sm:mb-6">
                     <span className="text-sm font-medium text-[#1D2939]">
                       Free
@@ -1121,7 +1121,7 @@ export default function Index() {
                 </div>
 
                 {/* Benefits Column */}
-                <div className="sm:flex-1 sm:pl-8 pt-2 sm:pt-4">
+                <div className="flex-1 pt-4">
                   <p className="text-[#1D2939] font-bold text-base md:text-lg mb-3">
                     Benefits:
                   </p>
@@ -1163,12 +1163,73 @@ export default function Index() {
               </button>
             </div>
 
-            {/* 2. Premium Plan Card */}
-            <div className="rounded-[32px] border-2 border-[#FFC700] p-6 md:p-7 flex flex-col justify-between shadow-[0_20px_50px_-15px_rgba(255,199,0,0.3)] relative">
-              <div className="flex flex-col sm:flex-row sm:items-start gap-6 sm:gap-0">
+            {/* 2. Premium Monthly Plan Card */}
+            <div className="rounded-[32px] bg-white border-2 border-[#FFC700] p-6 md:p-7 flex flex-col justify-between shadow-[0_20px_50px_-15px_rgba(255,199,0,0.3)] relative">
+              <div className="flex flex-row items-start gap-0">
                 {/* Price Column */}
-                <div className="sm:flex-1 sm:pr-8">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#FFC700] mb-4 sm:mb-6 bg-[#FFF9E5]">
+                <div className="flex-1">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#2828271A] mb-4 sm:mb-6">
+                    <span className="text-sm font-medium text-[#1D2939]">
+                      Premium
+                    </span>
+                    <img src="/crown.png" alt="crown" className="w-4 h-4" />
+                  </div>
+                  <div className="text-[36px] sm:text-[40px] md:text-[48px] font-bold text-[#1D2939] leading-none mb-1">
+                    $2.99
+                  </div>
+                  <p className="text-[#667085] text-sm md:text-base">
+                    Per Month
+                  </p>
+                </div>
+
+                {/* Benefits Column */}
+                <div className="flex-1 pt-4">
+                  <p className="text-[#1D2939] font-bold text-base md:text-lg mb-3">
+                    Benefits:
+                  </p>
+                  <ul className="space-y-3 sm:space-y-4">
+                    {[
+                      "Unlimited plans",
+                      "Create group with friends",
+                      "Accept plans with friends",
+                      "Share plans with friends",
+                      "Cancel anytime",
+                    ].map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-center gap-3 text-[#667085]"
+                      >
+                        <img
+                          src="/check circle.png"
+                          alt="check"
+                          className="w-5 h-5 flex-shrink-0"
+                        />
+                        <span className="text-sm">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <button
+                onClick={isPremiumActive ? undefined : handlePremiumPlanClick}
+                disabled={isPremiumActive}
+                className={`w-full mt-8 py-3 rounded-full text-base md:text-lg font-bold transition-colors flex items-center justify-center gap-2 ${
+                  isPremiumActive
+                    ? "bg-[#FFC700]/60 text-black/50 cursor-default"
+                    : "bg-[#FFC700] text-black hover:bg-[#E6B400]"
+                }`}
+              >
+                {isPremiumActive ? "Selected Plan" : "Select Plan"}
+              </button>
+            </div>
+
+            {/* 3. Premium Yearly Plan Card */}
+            <div className="rounded-[32px] bg-white border border-gray-100 p-6 md:p-7 flex flex-col justify-between shadow-[0px_20px_50px_rgba(0,0,0,0.05)] relative">
+              <div className="flex flex-row items-start gap-0">
+                {/* Price Column */}
+                <div className="flex-1">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#2828271A] mb-4 sm:mb-6">
                     <span className="text-sm font-medium text-[#1D2939]">
                       Premium
                     </span>
@@ -1183,7 +1244,7 @@ export default function Index() {
                 </div>
 
                 {/* Benefits Column */}
-                <div className="sm:flex-1 sm:pl-8 pt-2 sm:pt-4">
+                <div className="flex-1 pt-4">
                   <p className="text-[#1D2939] font-bold text-base md:text-lg mb-3">
                     Benefits:
                   </p>
@@ -1229,7 +1290,7 @@ export default function Index() {
 
       {/* FAQ Section */}
       <section id="faq" className="py-16 lg:py-24 bg-[#FDFCF6]">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-[100px]">
           {/* Header Row: Title + Illustration */}
           <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-6 lg:gap-10 mb-12">
             <div className="max-w-[900px] text-center lg:text-left">
@@ -1305,7 +1366,7 @@ export default function Index() {
 
       {/* Footer */}
       <footer className="bg-[#1D1D1D] pt-16 pb-10 lg:pt-[80px]">
-        <div className="max-w-[1440px] mx-auto px-6 lg:px-[100px]">
+        <div className="max-w-[1600px] mx-auto px-6 lg:px-[100px]">
           {/* Mobile Footer - centered vertical layout */}
           <div className="flex flex-col items-center gap-8 lg:hidden mb-10">
             {/* Logo */}
