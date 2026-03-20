@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
 import { apiFetch, getErrorMessage } from "@/lib/api";
 import { getVerifiedUser, setUser, clearVerifiedUser, UserProfile } from "@/lib/auth";
 
@@ -37,10 +36,10 @@ export default function CompleteProfile() {
       }
       return;
     }
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       mobile: verified.phone_number,
-      countryCode: verified.country_code
+      countryCode: verified.country_code,
     }));
   }, [verified, navigate]);
 
@@ -104,7 +103,6 @@ export default function CompleteProfile() {
 
   return (
     <div className="min-h-screen bg-[#FFFDF7] flex flex-col relative overflow-hidden font-satoshi">
-      <Navbar hideAuthButtons />
       <main className="flex-1 flex items-center justify-center px-4 py-4 md:p-10 w-full relative z-10">
         {/* Background Decorative Dashed Circles - hidden on small mobile */}
         <div className="absolute inset-0 hidden sm:flex items-center justify-center pointer-events-none">
@@ -116,9 +114,15 @@ export default function CompleteProfile() {
 
         {/* Main Card */}
         <div className="w-full max-w-[1240px] bg-white rounded-[20px] md:rounded-[40px] border border-gray-100 shadow-[0_10px_50px_rgba(0,0,0,0.05)] overflow-hidden relative z-10">
-          <div className="flex flex-col lg:flex-row lg:min-h-[650px]">
+          {/* Decorative Vector Triangle */}
+          {/* <img
+            src="/Vector.png"
+            alt=""
+            className="hidden lg:block absolute top-1 right-[31.5%] w-6 h-6 object-contain z-20"
+          /> */}
+          <div className="flex flex-col xl:flex-row xl:min-h-[650px]">
             {/* Left Side - Form Container */}
-            <div className="w-full lg:w-[45%] px-5 py-5 md:p-16 lg:pl-20 lg:pr-10 flex flex-col justify-center">
+            <div className="w-full xl:w-[45%] px-5 py-5 md:p-16 xl:pl-20 xl:pr-10 flex flex-col justify-center items-center xl:items-start">
               {/* Typography */}
               <h1 className="text-[22px] sm:text-[24px] md:text-[40px] font-bold text-[#1D2939] mb-3 sm:mb-5 md:mb-8 leading-tight tracking-tight">
                 Complete Your Profile
@@ -168,7 +172,9 @@ export default function CompleteProfile() {
                   </div>
                 </div>
                 {fieldErrors.profileImage && (
-                  <p className="text-sm text-red-500 -mt-4 mb-4 text-center">{fieldErrors.profileImage}</p>
+                  <p className="text-sm text-red-500 -mt-4 mb-4 text-center">
+                    {fieldErrors.profileImage}
+                  </p>
                 )}
 
                 <div className="space-y-4 md:space-y-5">
@@ -186,7 +192,9 @@ export default function CompleteProfile() {
                       className={`w-full h-[48px] md:h-[52px] border ${fieldErrors.fullName ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-sm md:text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
                     />
                     {fieldErrors.fullName && (
-                      <p className="text-sm text-red-500 mt-1">{fieldErrors.fullName}</p>
+                      <p className="text-sm text-red-500 mt-1">
+                        {fieldErrors.fullName}
+                      </p>
                     )}
                   </div>
 
@@ -204,7 +212,9 @@ export default function CompleteProfile() {
                       className={`w-full h-[48px] md:h-[52px] border ${fieldErrors.email ? "border-red-400" : "border-gray-200"} rounded-xl px-4 text-sm md:text-base text-[#1D2939] placeholder:text-gray-300 focus:outline-none focus:border-[#FFC700] transition-all`}
                     />
                     {fieldErrors.email && (
-                      <p className="text-sm text-red-500 mt-1">{fieldErrors.email}</p>
+                      <p className="text-sm text-red-500 mt-1">
+                        {fieldErrors.email}
+                      </p>
                     )}
                   </div>
 
@@ -245,7 +255,7 @@ export default function CompleteProfile() {
             </div>
 
             {/* Right Side - Illustration Container (hidden on mobile) */}
-            <div className="hidden lg:flex w-full lg:w-[55%] bg-white items-center justify-center">
+            <div className="hidden xl:flex w-full xl:w-[55%] bg-white items-center justify-center">
               <div className="relative w-full h-full flex items-end justify-center p-0">
                 <img
                   src="/CompleteProfileImg.png"
