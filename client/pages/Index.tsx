@@ -1467,6 +1467,16 @@ export default function Index() {
             <p className="text-white/60 text-sm font-normal">
               © Sparkly Inc. All Rights Reserved.
             </p>
+            <p className="text-white/60 text-sm font-normal text-center">
+              Powered by{" "}
+              <a
+                href="https://www.iroidsolutions.com"
+                target="_blank"
+                className="text-white hover:text-white/80 transition-colors hover:underline"
+              >
+                iRoid Solutions
+              </a>
+            </p>
           </div>
 
           {/* Desktop Footer - original layout */}
@@ -1534,8 +1544,8 @@ export default function Index() {
             <div className="w-full h-[1px] bg-white/10 mb-8" />
 
             {/* Bottom Section */}
-            <div className="flex flex-row items-center justify-between gap-6">
-              <p className="text-white/60 text-lg font-normal">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+              <p className="text-white/60 text-sm sm:text-lg font-normal">
                 © Sparkly Inc. All Rights Reserved.
               </p>
 
@@ -1556,6 +1566,16 @@ export default function Index() {
                 ))}
               </div>
             </div>
+            <p className="text-white/60 text-sm sm:text-lg font-normal text-center w-full mt-6">
+              Powered by{" "}
+              <a
+                href="https://www.iroidsolutions.com"
+                target="_blank"
+                className="text-white hover:text-white/80 transition-colors hover:underline"
+              >
+                iRoid Solutions
+              </a>
+            </p>
           </div>
         </div>
       </footer>
