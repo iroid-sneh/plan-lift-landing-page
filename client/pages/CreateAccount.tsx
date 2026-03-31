@@ -5,8 +5,8 @@ import { setPendingOtpContext } from "@/lib/auth";
 import Navbar from "@/components/Navbar";
 
 const countryCodes = [
-  { code: "+91", country: "India", flag: "🇮🇳", maxDigits: 10 },
   { code: "+1", country: "USA", flag: "🇺🇸", maxDigits: 10 },
+  { code: "+91", country: "India", flag: "🇮🇳", maxDigits: 10 },
   { code: "+1", country: "Canada", flag: "🇨🇦", maxDigits: 10 },
   { code: "+44", country: "UK", flag: "🇬🇧", maxDigits: 10 },
   { code: "+61", country: "Australia", flag: "🇦🇺", maxDigits: 9 },
